@@ -577,6 +577,19 @@
     </div>
   </section>
 
+  <!-- ============ SCREEN 1.5 : FAMILY OR FRIEND ============ -->
+  <section class="screen" id="s-who">
+    <div class="card">
+      <span class="big-emoji">🤗</span>
+      <h2 id="whoTitle">Lovely! One quick thing…</h2>
+      <p class="sub">Are you family, or a friend / colleague of Aman &amp; Vandana?</p>
+      <div class="choice-row">
+        <button class="choice" onclick="pickWho('Family')"><span class="ce">👨‍👩‍👧</span>Family</button>
+        <button class="choice" onclick="pickWho('Friend')"><span class="ce">🤝</span>Friend / Colleague</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ SCREEN 2 : COUNTDOWN ============ -->
   <section class="screen" id="s-count">
     <div class="card">
@@ -634,7 +647,7 @@
   <!-- ============ SCREEN 5 : GAMES (Round 1) ============ -->
   <section class="screen" id="s-games">
     <div class="card" style="text-align:left">
-      <h2 style="text-align:center">🎮 Round 1: The <span class="shimmer">Prediction League</span></h2>
+      <h2 style="text-align:center">🎮 <span id="roundTag">Round 1: </span>The <span class="shimmer">Prediction League</span></h2>
       <p class="sub" style="text-align:center">Your answers go on record, <b id="gamesName">friend</b>.<br>Bragging rights will be settled in September. 🏆</p>
 
       <div class="game-block">
@@ -804,7 +817,7 @@ const TRIVIA = [
 ];
 
 /* ---------- state ---------- */
-const state = { name: "", gender: "", lookLike: "", firstWord: "", trivia: 0, triviaDone: false, weightTouched: false };
+const state = { name: "", relation: "", gender: "", lookLike: "", firstWord: "", trivia: 0, triviaDone: false, weightTouched: false };
 let lastPayload = null;
 
 /* ---------- autosave: one row per person, updated as they play ---------- */
@@ -828,6 +841,7 @@ function buildPayload() {
   return {
     clientId: clientId,
     name: state.name,
+    relation: state.relation,
     gender: state.gender,
     babyName: document.getElementById("babyName").value.trim(),
     lookLike: state.lookLike,
@@ -952,12 +966,32 @@ function startCountdown() {
   /* navigate first — audio/network hiccups must never block the show */
   state.name = name;
   document.getElementById("gamesName").textContent = name.split(" ")[0];
-  go("s-count");
+  document.getElementById("whoTitle").textContent = "Lovely to meet you, " + name.split(" ")[0] + "!";
+  go("s-who");
   try { ac(); } catch (e) { /* unlock audio inside the user gesture (required on iOS) */ }
   try {
     clientId = deviceId + ":" + name.toLowerCase().replace(/\s+/g, " ");
     sendData("Opened 👀"); /* row appears in the sheet the moment they start */
   } catch (e) { /* capture is best-effort here; final submit retries */ }
+}
+
+function pickWho(rel) {
+  state.relation = rel;
+  sndPop();
+  /* family plays the games but skips the trivia round */
+  if (rel === "Family") {
+    document.getElementById("roundTag").textContent = "";
+    document.getElementById("submitBtn").textContent = "Lock in my predictions 🔒";
+  } else {
+    document.getElementById("roundTag").textContent = "Round 1: ";
+    document.getElementById("submitBtn").textContent = "Lock predictions → Round 2: Trivia 🧠";
+  }
+  autosave();
+  runCountdown();
+}
+
+function runCountdown() {
+  go("s-count");
   let n = 5;
   render(n);
   const t = setInterval(() => {
@@ -1047,8 +1081,12 @@ function sndBoom() {
 function showDate() { go("s-date"); sndTada(); fireConfetti(70); }
 function showGames() { go("s-games"); }
 
-/* everything is optional — head straight to the trivia round */
+/* everything is optional — friends get the trivia round, family goes straight to results */
 function goToTrivia() {
+  if (state.relation === "Family") {
+    submitPredictions();
+    return;
+  }
   go("s-trivia-intro");
   sndPop();
 }
@@ -1227,9 +1265,9 @@ function showSummary(p) {
     "👀 Looks like: " + dv(p.lookLike),
     "🎯 Birth date guess: " + dv(p.exactDate),
     "⚖️ Weight guess: " + dv(p.weight),
-    "🗣️ First word: " + dv(p.firstWord),
-    "🧠 Trivia: " + dv(p.triviaScore)
+    "🗣️ First word: " + dv(p.firstWord)
   ];
+  if (p.triviaScore) rows.push("🧠 Trivia: <b>" + esc(p.triviaScore) + "</b>"); /* family skips trivia */
   if (p.wish) rows.push("💌 Your wish: <b>" + esc(p.wish) + "</b>");
   document.getElementById("summaryBox").innerHTML = rows.join("<br>");
 }
