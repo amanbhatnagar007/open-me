@@ -623,10 +623,10 @@
       <h2>The little one checks in around…</h2>
       <div class="date-card">
         <div class="month">SEPTEMBER 2026</div>
-        <div class="day-wrap"><div class="day">25</div></div>
-        <div class="week">Week of 25th September 🗓️</div>
+        <div class="day-wrap"><div class="day">?</div></div>
+        <div class="week">Exact date? Baby's keeping it secret 🤫</div>
       </div>
-      <p class="sub">Mark your calendars — that's one deadline that will <i>not</i> be extended for a steering committee. 😄</p>
+      <p class="sub">Sometime in <b>September 2026</b> — that's one deadline that will <i>not</i> be extended for a steering committee. 😄</p>
       <button class="btn" onclick="showGames()">Wait, there's more — play the prediction games! 🎮</button>
     </div>
   </section>
@@ -663,7 +663,7 @@
 
       <div class="game-block">
         <span class="game-label">4️⃣ Pick the exact birth date 🎯</span>
-        <div class="game-note">Due week: 25th Sept. Closest guess wins the official title of <b>Office Baby Oracle 🔮</b>.</div>
+        <div class="game-note">We're only telling you the month 😏. Closest guess wins the official title of <b>Office Baby Oracle 🔮</b>.</div>
         <input type="date" id="exactDate" min="2026-09-01" max="2026-10-15">
       </div>
 
@@ -752,20 +752,21 @@
    ===================================================================== */
 const WEBHOOK_URL    = "https://script.google.com/macros/s/AKfycbwTsfKqerG7rWUFBK_JDfBUznTGwT4_pK_2Wn7cCYQQ9Qp-xRZLOu-w2h7eCh4ZxmK84Q/exec";
 const FALLBACK_EMAIL = "amanbhatnagarmrt007@gmail.com";
-const DUE_DATE       = "2026-09-25";
+/* public countdown target: start of the baby month (exact date stays secret) */
+const BABY_MONTH_START = "2026-09-01";
 
 /* Trivia — feel free to edit the questions, options and answer index (0-based). */
 const TRIVIA = [
   {
     e: "🗓️",
-    q: "When is the tiny boss scheduled to arrive?",
+    q: "Which week of September will the baby arrive?",
     opts: [
-      "Week of 15th August — an Independence Day entry",
-      "Week of 25th September",
-      "31st December — right at year-end closing",
-      "Whenever the client approves the deliverable"
+      "First week — an early kickoff",
+      "Second week — a mid-sprint delivery",
+      "Third or fourth week — a strong close",
+      "🤫 Nice try — that's classified!"
     ],
-    ans: 1
+    ans: 3
   },
   {
     e: "💼",
@@ -1181,10 +1182,10 @@ function submitPredictions() {
 }
 
 function showDone(p) {
-  /* days-to-go ticker */
-  const days = Math.max(0, Math.ceil((new Date(DUE_DATE + "T00:00:00") - new Date()) / 86400000));
+  /* days-to-go ticker — counts to September itself so the exact date stays secret */
+  const days = Math.max(0, Math.ceil((new Date(BABY_MONTH_START + "T00:00:00") - new Date()) / 86400000));
   document.getElementById("daysTicker").textContent =
-    days > 0 ? "🗓️ " + days + " days until Baby Bhatnagar!" : "🗓️ Baby Bhatnagar is due — any moment now!";
+    days > 0 ? "🗓️ " + days + " days until September — the baby month!" : "🗓️ It's September — Baby Bhatnagar could arrive any day now!";
 
   showSummary(p);
   go("s-done");
