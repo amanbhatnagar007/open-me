@@ -1,0 +1,40 @@
+# Rebuilds wall.json (the blessing wall on Ivika's page) from the Google Sheet.
+# Runs every 30 minutes; commits only when a blessing was added, edited or hidden.
+name: Refresh blessing wall
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-wall
+  cancel-in-progress: false
+
+jobs:
+  wall:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wall.json from the sheet
+        env:
+          SHEET_KEY: ${{ secrets.SHEET_KEY }}
+        run: python3 .github/scripts/build_wall.py
+
+      - name: Publish if anything changed
+        run: |
+          git add wall.json
+          if git diff --cached --quiet; then echo "Nothing new."; exit 0; fi
+          git config user.name "ivika-wall-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Blessing wall: refresh"
+          for i in 1 2 3; do
+            git pull -q --rebase && git push -q && exit 0
+            sleep 10
+          done
+          exit 1

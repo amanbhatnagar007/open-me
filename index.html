@@ -323,6 +323,60 @@
   .note .like { border: none; background: none; font-size: .9rem; color: var(--soft); font-weight: 700; padding: 2px 4px; }
   .note .like.on { color: #D0567E; }
   .more { display: block; margin: 8px auto 0; }
+  .note .meta { display: flex; gap: 6px; align-items: center; }
+  .wall-empty { text-align: center; padding: 22px 16px 20px; border-radius: 22px; margin-top: 18px;
+    background: linear-gradient(160deg, #FFF7FA, #F8F0FB); border: 1.5px dashed #EBC6D4; }
+  .wall-empty > span { font-size: 2.3rem; display: block; animation: floaty 4s ease-in-out infinite; }
+  .wall-empty strong { display: block; font-family: var(--display); font-weight: 600; color: var(--plum); font-size: 1.12rem; margin-top: 2px; }
+  .wall-empty p { color: var(--soft); margin: 4px 0 14px; }
+
+  /* the keepsake envelope: wishes from the prediction game */
+  .keepsake { margin-top: 28px; }
+  .envelope { display: block; width: 100%; border: none; padding: 5px; border-radius: 28px; color: var(--plum); text-align: center;
+    background: repeating-linear-gradient(-45deg, #E7A2B8 0 12px, #fff 12px 22px, #9DB8D6 22px 34px, #fff 34px 44px);
+    box-shadow: 0 16px 36px rgba(120,60,90,.16); transition: transform .3s ease; }
+  .envelope:active { transform: scale(.985); }
+  .env-inner { display: block; border-radius: 23px; padding: 24px 16px 20px; background: linear-gradient(170deg, #FFFDF8 0%, #FDF1EC 100%); }
+  .env { position: relative; display: block; width: 176px; height: 114px; margin: 8px auto 18px; perspective: 520px;
+    animation: envbob 4.5s ease-in-out infinite; transition: margin .6s ease; }
+  @keyframes envbob { 0%,100% { transform: translateY(0) rotate(-2.5deg); } 50% { transform: translateY(-6px) rotate(2.5deg); } }
+  .env::before { content: ""; position: absolute; inset: 0; border-radius: 12px; background: #C98299; box-shadow: 0 14px 26px rgba(120,60,90,.22); }
+  .env-letter { position: absolute; left: 8%; right: 8%; top: 7%; height: 88%; z-index: 1; border-radius: 7px; background: #fff;
+    box-shadow: 0 2px 10px rgba(120,60,90,.18); display: flex; flex-direction: column; align-items: center; padding-top: 11px;
+    transition: transform .8s cubic-bezier(.2,1.25,.4,1) .7s; }
+  .env-letter b { font-family: var(--display); font-weight: 600; font-size: 1.55rem; color: var(--rose-deep); line-height: 1; }
+  .env-letter i { font-style: normal; font-family: var(--script); font-size: 1.12rem; color: var(--plum); line-height: 1.05; margin-top: 3px; }
+  .env-pocket { position: absolute; inset: 0; z-index: 2; border-radius: 12px; clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+    background: linear-gradient(to top right, transparent calc(50% - 1px), rgba(150,70,100,.2) 50%, transparent calc(50% + 1px)) left bottom / 50% 46% no-repeat,
+      linear-gradient(to top left, transparent calc(50% - 1px), rgba(150,70,100,.2) 50%, transparent calc(50% + 1px)) right bottom / 50% 46% no-repeat,
+      linear-gradient(165deg, #FCE6ED, #F3C3D2); }
+  .env-flap { position: absolute; left: 0; right: 0; top: 0; height: 60%; z-index: 3; border-radius: 12px 12px 0 0;
+    background: #B86A85; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top center;
+    transition: transform .6s ease .25s, z-index 0s linear .55s; }
+  .env-flap::before { content: ""; position: absolute; left: 3px; right: 3px; top: 0; bottom: 4px; clip-path: polygon(0 0, 100% 0, 50% 100%);
+    background: linear-gradient(180deg, #F7D2DE, #E9AEC1); }
+  .env-seal { position: absolute; left: 50%; top: 58%; z-index: 4; width: 42px; height: 42px; margin: -21px 0 0 -21px; border-radius: 50%;
+    display: grid; place-items: center; color: #FFF1D6; font-family: var(--display); font-weight: 700; font-size: .82rem; letter-spacing: .05em;
+    background: radial-gradient(circle at 35% 30%, #D98CA3, #A24867 72%); box-shadow: 0 3px 8px rgba(120,40,70,.35), inset 0 0 0 3px rgba(255,255,255,.2);
+    animation: sealglow 2.4s ease-in-out infinite; transition: transform .35s ease, opacity .35s ease; }
+  @keyframes sealglow { 0%,100% { box-shadow: 0 3px 8px rgba(120,40,70,.35), inset 0 0 0 3px rgba(255,255,255,.2), 0 0 0 0 rgba(217,140,163,.55); }
+    60% { box-shadow: 0 3px 8px rgba(120,40,70,.35), inset 0 0 0 3px rgba(255,255,255,.2), 0 0 0 12px rgba(217,140,163,0); } }
+  .env-text { display: block; }
+  .env-text strong { display: block; font-family: var(--display); font-weight: 600; font-size: 1.22rem; line-height: 1.25; }
+  .env-text > span { display: block; color: var(--soft); font-size: .92rem; line-height: 1.5; margin-top: 5px; }
+  .env-cta { display: inline-block; margin-top: 14px; font-style: normal; font-weight: 700; font-size: .94rem; color: #fff; padding: 11px 22px; border-radius: 999px;
+    background: linear-gradient(100deg, #C4738C, #8F5FA8); box-shadow: 0 10px 22px rgba(143,95,168,.28); }
+  .keepsake.open .env { animation: none; margin-top: 58px; }
+  .keepsake.open .env-seal { transform: scale(1.5); opacity: 0; }
+  .keepsake.open .env-flap { transform: rotateX(180deg); z-index: 0; }
+  .keepsake.open .env-letter { transform: translateY(-50%); }
+  .keepsake.opened .env-cta { background: #fff; color: var(--rose-deep); border: 1.5px solid #EBD3DC; box-shadow: none; }
+  .old-box { margin-top: 6px; }
+  .old-box .filters { margin-top: 18px; }
+  .wall.old .note { background: #FFFDF7 repeating-linear-gradient(180deg, transparent 0 29px, rgba(156,79,104,.075) 29px 30px);
+    border: 1px solid #F1E3D6; border-left: 3px solid #E7A2B8; transform-origin: top center; animation: unfold .7s cubic-bezier(.2,1,.4,1) both; }
+  @keyframes unfold { from { opacity: 0; transform: perspective(700px) rotateX(-70deg) translateY(-14px); } to { opacity: 1; transform: none; } }
+  .fold { display: block; margin: 14px auto 0; border: none; background: none; color: var(--rose-deep); font-weight: 700; font-size: .92rem; padding: 6px 10px; }
 
   footer { text-align: center; color: var(--soft); font-size: .88rem; padding: 14px 0 22px; }
   footer .n { font-family: var(--script); font-size: 2rem; color: var(--rose-deep); display: block; line-height: 1.1; }
@@ -548,15 +602,51 @@
   <!-- PREVIOUS BLESSINGS (towards the end) -->
   <article class="card" id="wallCard">
     <h2>Blessings for <span class="sc">Ivika</span></h2>
-    <p class="lede">All the love she has received so far — from before she arrived, and since.</p>
-    <div class="filters" role="group" aria-label="Filter blessings">
+    <p class="lede">Every note sent since she arrived on 12 September 2026.</p>
+    <div class="filters" id="newFilters" role="group" aria-label="Filter blessings">
       <button type="button" class="on" data-f="all">All</button>
       <button type="button" data-f="Family">Family</button>
       <button type="button" data-f="Friend">Friends</button>
       <span class="n" id="wallCount"></span>
     </div>
     <div class="wall" id="wall"></div>
+    <div class="wall-empty" id="wallEmpty" hidden>
+      <span aria-hidden="true">🕊️</span>
+      <strong>Be the first to bless Ivika</strong>
+      <p>Your note will appear right here.</p>
+      <button class="btn primary" id="emptyBless" type="button">💌 Write a blessing</button>
+    </div>
     <button class="btn ghost more" id="moreBtn" type="button" hidden>Show more blessings</button>
+
+    <!-- wishes written during the prediction game, sealed in an envelope -->
+    <div class="keepsake" id="keepsake">
+      <button class="envelope" id="envBtn" type="button" aria-expanded="false" aria-controls="oldBox">
+        <span class="env-inner">
+          <span class="env" aria-hidden="true">
+            <span class="env-letter"><b class="oldN">63</b><i>wishes for<br>Baby AV</i></span>
+            <span class="env-pocket"></span>
+            <span class="env-flap"></span>
+            <span class="env-seal">AV</span>
+          </span>
+          <span class="env-text">
+            <strong>Wishes from before she arrived</strong>
+            <span><b class="oldN">63</b> wishes written during the prediction game, when she was still “Baby AV” 🔮</span>
+            <em class="env-cta" id="envCta">Tap to open the envelope 💌</em>
+          </span>
+        </span>
+      </button>
+      <div class="old-box" id="oldBox" hidden>
+        <div class="filters" id="oldFilters" role="group" aria-label="Filter wishes">
+          <button type="button" class="on" data-f="all">All</button>
+          <button type="button" data-f="Family">Family</button>
+          <button type="button" data-f="Friend">Friends</button>
+          <span class="n" id="oldCount"></span>
+        </div>
+        <div class="wall old" id="oldWall"></div>
+        <button class="btn ghost more" id="oldMore" type="button" hidden>Show more wishes</button>
+        <button class="fold" id="foldBtn" type="button">Close the envelope ▴</button>
+      </div>
+    </div>
   </article>
 
   <footer>
@@ -786,8 +876,16 @@ function startPage() {
   if (pageStarted) return;
   pageStarted = true;
   const nav = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) document.querySelectorAll("nav.pills a").forEach(a => a.classList.toggle("on", a.dataset.s === e.target.id));
+    if (!e.isIntersecting) return;
+    document.querySelectorAll("nav.pills a").forEach(a => {
+      const on = a.dataset.s === e.target.id; a.classList.toggle("on", on);
+      if (on) { const p = $("pills"); p.scrollTo({ left: a.offsetLeft - (p.clientWidth - a.offsetWidth) / 2, behavior: "smooth" }); }
+    });
   }), { rootMargin: "-45% 0px -50% 0px" });
+  document.querySelectorAll("nav.pills a").forEach(a => a.addEventListener("click", e => {
+    const t = $(a.dataset.s); if (!t) return;
+    e.preventDefault(); t.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  }));
   document.querySelectorAll(".card").forEach(c => nav.observe(c));
 }
 
@@ -1021,38 +1119,106 @@ $("findName").addEventListener("input", () => {
 });
 
 /* ======================= BLESSINGS ======================= */
-let wall = WALL_SNAPSHOT.slice(), wallFilter = "all", wallShown = 12;
+/* wall.json is rebuilt from the sheet every 30 minutes (filtered: first name + last initial,
+   hidden/test/unkind entries left out). b:1 = blessing since she was born, b:0 = wish from the prediction game. */
+let wishes = WALL_SNAPSHOT.slice();
 const likes = new Set(JSON.parse(store.get("ivikaLikes") || "[]"));
 const NOTE_TINTS = ["#FFF3F7", "#FDF6EA", "#F5F0FC", "#EEF7F1", "#EEF4FB", "#FBF0EA"];
-function noteKey(w) { return (w.n + "|" + w.t.slice(0, 30)).toLowerCase(); }
-function renderWall() {
-  const list = wall.filter(w => wallFilter === "all" || w.r === wallFilter);
-  $("wallCount").textContent = `${list.length} blessing${list.length === 1 ? "" : "s"}`;
-  $("wall").innerHTML = list.slice(0, wallShown).map((w, i) => {
-    const k = noteKey(w), on = likes.has(k);
-    return `<figure class="note" style="background:${NOTE_TINTS[i % NOTE_TINTS.length]};animation-delay:${Math.min(i, 10) * 40}ms">
-      ${w.fresh ? '<span class="new">✨ just now</span>' : ""}
-      <q>${esc(w.t)}</q>
-      <figcaption class="who"><b>— ${esc(w.n)}</b><span style="display:flex;gap:6px;align-items:center"><span class="tag">${w.r === "Friend" ? "Friend" : "Family"}</span>
-      <button class="like ${on ? "on" : ""}" type="button" data-k="${esc(k)}" aria-label="Love this blessing">${on ? "💗" : "🤍"}</button></span></figcaption></figure>`;
-  }).join("");
-  $("moreBtn").hidden = list.length <= wallShown;
-  $("wall").querySelectorAll(".like").forEach(b => b.onclick = () => {
-    const k = b.dataset.k; likes.has(k) ? likes.delete(k) : likes.add(k);
-    store.set("ivikaLikes", JSON.stringify([...likes])); b.classList.toggle("on"); b.textContent = likes.has(k) ? "💗" : "🤍"; pop();
-  });
+const KIN = ["nani", "dadi", "nana", "dada", "bua", "mama", "masi", "mausi", "chachi", "chacha", "chachu", "taiji", "tauji", "phupa", "bhabhi", "bhaiya", "didi", "ji"];
+function shortName(raw) {
+  const w = String(raw).replace(/\s+/g, " ").trim().split(" ").map(x => x.charAt(0).toUpperCase() + x.slice(1).toLowerCase());
+  if (w.length === 1) return w[0];
+  const last = w[w.length - 1];
+  return KIN.includes(last.toLowerCase()) ? w.join(" ") : `${w[0]} ${last.charAt(0)}.`;
 }
-renderWall();
-fetch(SCRIPT_URL + "?wall=1").then(r => r.json()).then(j => {
-  if (!j || !j.ok || !Array.isArray(j.wall) || !j.wall.length) return;   // older script: keep the snapshot
-  const fresh = wall.filter(w => w.fresh);
-  wall = fresh.concat(j.wall.filter(w => !fresh.some(f => noteKey(f) === noteKey(w)))); renderWall();
+function noteKey(w) { return (w.n + "|" + w.t.slice(0, 30)).toLowerCase(); }
+const textKey = t => String(t).replace(/\s+/g, " ").trim().toLowerCase().slice(0, 40);
+
+/* your own blessings show straight away, until the next wall refresh includes them */
+let mine = [];
+try { mine = JSON.parse(store.get("ivikaMine") || "[]").filter(m => Date.now() - m.sent < 3 * 86400000); } catch (e) {}
+const saveMine = () => store.set("ivikaMine", JSON.stringify(mine.slice(0, 10)));
+function newBlessings() {
+  const live = wishes.filter(w => w.b);
+  return mine.filter(m => !live.some(w => textKey(w.t) === textKey(m.t))).map(m => Object.assign({ fresh: true }, m)).concat(live);
+}
+const oldWishes = () => wishes.filter(w => !w.b);
+
+function ago(iso) {
+  const t = Date.parse(iso); if (!t) return "";
+  const m = Math.round((Date.now() - t) / 60000);
+  if (m < 60) return m <= 1 ? "just now" : `${m} min ago`;
+  const h = Math.round(m / 60); if (h < 24) return `${h} hr${h === 1 ? "" : "s"} ago`;
+  return new Date(t).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+function noteHTML(w, i, old) {
+  const k = noteKey(w), on = likes.has(k), when = !old && !w.fresh && w.at ? ago(w.at) : "";
+  return `<figure class="note" style="${old ? "" : `background:${NOTE_TINTS[i % NOTE_TINTS.length]};`}animation-delay:${Math.min(i, 11) * (old ? 75 : 40)}ms">
+    ${w.fresh ? '<span class="new">✨ just sent</span>' : ""}
+    <q>${esc(w.t)}</q>
+    <figcaption class="who"><b>— ${esc(w.n)}</b><span class="meta"><span class="tag">${w.r === "Friend" ? "Friend" : "Family"}${when ? " · " + esc(when) : ""}</span>
+    <button class="like ${on ? "on" : ""}" type="button" data-k="${esc(k)}" aria-label="Love this" aria-pressed="${on}">${on ? "💗" : "🤍"}</button></span></figcaption></figure>`;
+}
+function makeWall(o) {
+  o.filter = "all"; o.shown = 12;
+  o.render = () => {
+    const all = o.get(), list = all.filter(w => o.filter === "all" || w.r === o.filter);
+    $(o.count).textContent = `${list.length} ${list.length === 1 ? o.one : o.many}`;
+    $(o.wall).innerHTML = list.slice(0, o.shown).map((w, i) => noteHTML(w, i, o.old)).join("");
+    $(o.more).hidden = list.length <= o.shown;
+    o.after(all);
+  };
+  const btns = () => document.querySelectorAll(`#${o.filters} button`);
+  btns().forEach(b => b.onclick = () => { o.filter = b.dataset.f; o.shown = 12; btns().forEach(x => x.classList.toggle("on", x === b)); o.render(); });
+  o.reset = () => { o.filter = "all"; o.shown = 12; btns().forEach(x => x.classList.toggle("on", x.dataset.f === "all")); };
+  $(o.more).onclick = () => { o.shown += 12; o.render(); };
+  $(o.wall).addEventListener("click", e => {
+    const b = e.target.closest(".like"); if (!b) return;
+    const k = b.dataset.k; likes.has(k) ? likes.delete(k) : likes.add(k);
+    store.set("ivikaLikes", JSON.stringify([...likes]));
+    b.classList.toggle("on", likes.has(k)); b.textContent = likes.has(k) ? "💗" : "🤍"; b.setAttribute("aria-pressed", likes.has(k)); pop();
+  });
+  return o;
+}
+const NEW_WALL = makeWall({ get: newBlessings, wall: "wall", filters: "newFilters", count: "wallCount", more: "moreBtn", one: "blessing", many: "blessings",
+  after: all => { $("wallEmpty").hidden = all.length > 0; $("newFilters").hidden = !all.length; } });
+const OLD_WALL = makeWall({ get: oldWishes, wall: "oldWall", filters: "oldFilters", count: "oldCount", more: "oldMore", one: "wish", many: "wishes", old: true,
+  after: all => document.querySelectorAll(".oldN").forEach(n => n.textContent = all.length) });
+NEW_WALL.render(); OLD_WALL.after(oldWishes());
+
+fetch("wall.json", { cache: "no-store" }).then(r => r.ok ? r.json() : null).then(j => {
+  if (!j || !Array.isArray(j.wall) || !j.wall.length) return;          // keep the snapshot baked into the page
+  wishes = j.wall;
+  mine = mine.filter(m => !j.wall.some(w => textKey(w.t) === textKey(m.t))); saveMine();
+  NEW_WALL.render(); $("oldBox").hidden ? OLD_WALL.after(oldWishes()) : OLD_WALL.render();
 }).catch(() => {});
-document.querySelectorAll(".filters button").forEach(b => b.onclick = () => {
-  wallFilter = b.dataset.f; wallShown = 12;
-  document.querySelectorAll(".filters button").forEach(x => x.classList.toggle("on", x === b)); renderWall();
-});
-$("moreBtn").onclick = () => { wallShown += 12; renderWall(); };
+
+/* open / close the envelope */
+let envOpen = false, envBusy = false;
+$("envBtn").onclick = () => {
+  if (envBusy) return;
+  const k = $("keepsake");
+  if (envOpen) {
+    envOpen = false; k.classList.remove("open", "opened"); $("oldBox").hidden = true;
+    $("envBtn").setAttribute("aria-expanded", "false"); $("envCta").textContent = "Tap to open the envelope 💌"; pop();
+    k.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+    return;
+  }
+  envOpen = envBusy = true; k.classList.add("open"); $("envBtn").setAttribute("aria-expanded", "true");
+  pop(); tone(523, .25, "sine", .08, .3); tone(659, .25, "sine", .08, .5);
+  setTimeout(() => {
+    const r = k.querySelector(".env").getBoundingClientRect();
+    burst(110, GOLD, r.left + r.width / 2, r.top + r.height * .2, 5); chime();
+    OLD_WALL.reset(); OLD_WALL.render();
+    $("oldBox").hidden = false; k.classList.add("opened"); $("envCta").textContent = "Close the envelope ▴";
+    envBusy = false;
+  }, reduced ? 50 : 1450);
+};
+$("foldBtn").onclick = () => $("envBtn").click();
+$("emptyBless").onclick = () => {
+  $("blessNow").scrollIntoView({ behavior: "smooth", block: "start" });
+  setTimeout(() => $("bName").focus({ preventScroll: true }), 700);
+};
 
 let relation = "";
 document.querySelectorAll(".seg button").forEach(b => b.onclick = () => { relation = b.dataset.rel; document.querySelectorAll(".seg button").forEach(x => x.classList.toggle("on", x === b)); });
@@ -1071,10 +1237,9 @@ $("blessForm").onsubmit = async e => {
     await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ kind: "blessing", clientId: "blessing:" + deviceId + ":" + Date.now(), name, relation, wish: msg, status: "Blessing 🎀",
         gender: "", babyName: "", lookLike: "", exactDate: "", weight: "", firstWord: "", triviaScore: "" }) });
-    const words = name.replace(/\s+/g, " ").split(" "), first = words[0];
-    const short = words.length > 1 ? `${first} ${words[words.length - 1][0].toUpperCase()}.` : first;
-    wall.unshift({ n: short, r: relation || "Family", t: msg, b: 1, fresh: true });
-    wallFilter = "all"; wallShown = 12; document.querySelectorAll(".filters button").forEach(x => x.classList.toggle("on", x.dataset.f === "all")); renderWall();
+    const first = shortName(name).split(" ")[0];
+    mine.unshift({ n: shortName(name), r: relation || "Family", t: msg, b: 1, at: new Date().toISOString(), sent: Date.now() }); saveMine();
+    NEW_WALL.reset(); NEW_WALL.render();
     $("blessForm").hidden = true; $("bThanks").hidden = false;
     $("bThanksTitle").textContent = `Thank you, ${first}! 💗`;
     burst(140); chime();
