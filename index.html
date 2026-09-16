@@ -10,52 +10,39 @@
 <meta name="theme-color" content="#3B1A2C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Fredoka:wght@400;500;600;700&family=Great+Vibes&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
     --plum: #5C2E44; --plum-deep: #2E1424; --rose: #C4738C; --rose-deep: #9C4F68;
-    --rose-soft: #F2DCE2; --blush: #FDF3F6; --gold: #C9A24B; --gold-soft: #F5E6BD;
-    --ink: #35244D; --soft: #7A659A; --sage: #7E9B84; --sky: #C7DDEE; --boy: #5F84A8;
+    --rose-soft: #F2DCE2; --blush: #FDF3F6; --gold: #C29A45; --gold-soft: #F5E6BD;
+    --ink: #35244D; --soft: #7A659A; --sage: #7E9B84; --lilac: #CDBCE4; --boy: #5F84A8;
     --display: "Fredoka", "Quicksand", system-ui, sans-serif;
     --body: "Quicksand", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --script: "Great Vibes", "Snell Roundhand", "Brush Script MT", cursive;
+    --serif: "Cormorant Garamond", Georgia, serif;
   }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 74px; }
   body {
-    font-family: var(--body); color: var(--ink);
-    background: radial-gradient(120% 60% at 50% 0%, #FFF7F2 0%, var(--blush) 45%, #F7ECF4 100%) fixed;
-    min-height: 100vh; overflow-x: hidden;
+    font-family: var(--body); color: var(--ink); min-height: 100vh; overflow-x: hidden;
+    background: #FBEFF4 radial-gradient(130% 70% at 50% 0%, #FFF8F2 0%, #FDF1F5 42%, #F6ECF6 100%) fixed;
     -webkit-tap-highlight-color: transparent;
   }
   body.locked { overflow: hidden; }
-  button { font: inherit; cursor: pointer; touch-action: manipulation; }
+  button { font: inherit; cursor: pointer; touch-action: manipulation; color: inherit; }
   [hidden] { display: none !important; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
-  /* ================= NIGHT SKY OVERLAYS ================= */
-  /* stacking: night background (38) < stars, moon, clouds, rays (39) < overlay text (42) */
-  #nightBg { position: fixed; inset: 0; z-index: 38;
-    background: radial-gradient(120% 90% at 50% 20%, #5A2B45 0%, #3B1A2C 45%, #1E0C17 100%);
-    transition: opacity .9s ease; }
+  /* ======================= REVEAL (night sky) ======================= */
+  #nightBg { position: fixed; inset: 0; z-index: 38; transition: opacity 1s ease;
+    background: radial-gradient(120% 90% at 50% 20%, #5A2B45 0%, #3B1A2C 45%, #1E0C17 100%); }
   #nightBg.gone { opacity: 0; pointer-events: none; }
-  .overlay {
-    position: fixed; inset: 0; z-index: 42;
-    display: flex; align-items: center; justify-content: center; flex-direction: column;
-    padding: max(24px, env(safe-area-inset-top)) 22px max(24px, env(safe-area-inset-bottom));
-    text-align: center; color: #fff;
-    transition: opacity .9s ease, visibility .9s;
-  }
-  .overlay.gone { opacity: 0; visibility: hidden; pointer-events: none; }
   #sky { position: fixed; inset: 0; z-index: 39; pointer-events: none; }
-  .overlay > .inner { position: relative; max-width: 520px; width: 100%; }
-  .moon {
-    position: fixed; top: max(40px, 7vh); right: 11vw; width: 74px; height: 74px; border-radius: 50%;
+  .moon { position: fixed; top: max(40px, 7vh); right: 11vw; width: 74px; height: 74px; border-radius: 50%;
     box-shadow: -16px 12px 0 0 #F6E3C5; z-index: 39; transform: rotate(-18deg);
-    filter: drop-shadow(0 0 22px rgba(246,227,197,.45)); animation: bob 6s ease-in-out infinite;
-  }
-  .cloud {
-    position: fixed; z-index: 39; background: rgba(255,255,255,.07); border-radius: 999px;
-    animation: drift 30s linear infinite;
-  }
+    filter: drop-shadow(0 0 24px rgba(246,227,197,.5)); animation: moonbob 6s ease-in-out infinite; }
+  @keyframes moonbob { 0%,100% { transform: rotate(-18deg) translateY(0); } 50% { transform: rotate(-18deg) translateY(-8px); } }
+  .cloud { position: fixed; z-index: 39; background: rgba(255,255,255,.07); border-radius: 999px; animation: drift 30s ease-in-out infinite; }
   .cloud::before, .cloud::after { content: ""; position: absolute; background: inherit; border-radius: 50%; }
   .cloud.c1 { width: 180px; height: 52px; top: 17vh; left: -40px; }
   .cloud.c1::before { width: 80px; height: 80px; top: -38px; left: 30px; }
@@ -63,48 +50,47 @@
   .cloud.c2 { width: 220px; height: 60px; bottom: 12vh; right: -60px; animation-duration: 42s; animation-direction: reverse; }
   .cloud.c2::before { width: 96px; height: 96px; top: -46px; left: 40px; }
   .cloud.c2::after { width: 70px; height: 70px; top: -30px; left: 118px; }
-  @keyframes drift { from { transform: translateX(0); } 50% { transform: translateX(40px); } to { transform: translateX(0); } }
-  @keyframes bob { 0%,100% { transform: rotate(-18deg) translateY(0); } 50% { transform: rotate(-18deg) translateY(-8px); } }
+  @keyframes drift { 0%,100% { transform: translateX(0); } 50% { transform: translateX(40px); } }
+  .rays { position: fixed; left: 50%; top: 50%; width: 180vmax; height: 180vmax; translate: -50% -50%; z-index: 39;
+    background: repeating-conic-gradient(rgba(245,200,215,.13) 0 8deg, transparent 8deg 22deg); border-radius: 50%;
+    opacity: 0; transition: opacity .8s; animation: spin 24s linear infinite; }
+  .rays.on { opacity: 1; }
+  .rays.gold { background: repeating-conic-gradient(rgba(245,222,160,.12) 0 6deg, transparent 6deg 20deg); }
 
-  .kicker { font-family: var(--display); letter-spacing: .32em; font-size: .78rem; font-weight: 600; text-transform: uppercase; color: var(--gold-soft); }
+  .overlay { position: fixed; inset: 0; z-index: 42; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; text-align: center; color: #fff; transition: opacity .9s ease, visibility .9s;
+    padding: max(24px, env(safe-area-inset-top)) 22px max(24px, env(safe-area-inset-bottom)); }
+  .overlay.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+  .overlay .inner { max-width: 540px; width: 100%; }
+  .kicker { font-family: var(--display); letter-spacing: .32em; font-size: .76rem; font-weight: 600; text-transform: uppercase; color: var(--gold-soft); }
   .intro-title { font-family: var(--display); font-weight: 600; font-size: clamp(2rem, 8.5vw, 3.2rem); line-height: 1.15; margin: 14px 0 12px; }
-  .intro-title em { font-style: normal; background: linear-gradient(90deg, #F5E6BD, #F2B8C9, #F5E6BD); background-size: 200% 100%;
-    -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 4s linear infinite; }
-  @keyframes sheen { to { background-position: -200% 0; } }
+  .shine { background: linear-gradient(90deg, #F5E6BD, #F2B8C9, #F5E6BD, #F2B8C9); background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 5s linear infinite; }
+  @keyframes sheen { to { background-position: -300% 0; } }
   .intro-sub { color: #E9D4DA; font-size: 1.02rem; line-height: 1.6; margin-bottom: 30px; }
   .gift { font-size: 76px; display: inline-block; animation: wiggle 2.4s ease-in-out infinite; filter: drop-shadow(0 10px 24px rgba(0,0,0,.35)); }
   @keyframes wiggle { 0%,62%,100% { transform: rotate(0); } 68% { transform: rotate(-10deg) scale(1.05); } 76% { transform: rotate(9deg) scale(1.07); } 84% { transform: rotate(-5deg); } }
-
-  .btn-glow {
-    border: none; color: #3B1A2C; font-family: var(--display); font-weight: 600; font-size: 1.1rem;
+  .btn-glow { border: none; color: #3B1A2C; font-family: var(--display); font-weight: 600; font-size: 1.1rem;
     padding: 17px 34px; border-radius: 999px; width: min(100%, 340px);
     background: linear-gradient(100deg, #F5E6BD, #F7C9D6 55%, #F5E6BD); background-size: 200% 100%;
-    box-shadow: 0 0 0 0 rgba(245,230,189,.55), 0 14px 34px rgba(0,0,0,.35);
-    animation: pulse 2.4s ease-out infinite, sheen 5s linear infinite;
-  }
+    animation: pulse 2.4s ease-out infinite; box-shadow: 0 14px 34px rgba(0,0,0,.35); }
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245,230,189,.5), 0 14px 34px rgba(0,0,0,.35); } 70% { box-shadow: 0 0 0 20px rgba(245,230,189,0), 0 14px 34px rgba(0,0,0,.35); } 100% { box-shadow: 0 0 0 0 rgba(245,230,189,0), 0 14px 34px rgba(0,0,0,.35); } }
   .btn-glow:active { transform: scale(.97); }
 
-  /* countdown */
   .ring { width: 210px; height: 210px; border-radius: 50%; margin: 0 auto; display: grid; place-items: center;
     background: radial-gradient(closest-side, #3B1A2C 84%, transparent 85% 100%), conic-gradient(#F5E6BD, #F2B8C9, #CDBCE4, #F5E6BD);
     animation: spin 2.6s linear infinite; box-shadow: 0 0 60px rgba(242,184,201,.35); }
-  .ring span { font-family: var(--display); font-weight: 700; font-size: 104px; color: #fff; animation: spinback 2.6s linear infinite; }
+  .ring span { font-family: var(--display); font-weight: 700; font-size: 104px; animation: spinback 2.6s linear infinite; }
   .ring span.hit { animation: spinback 2.6s linear infinite, numpop .9s ease; }
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes spinback { to { transform: rotate(-360deg); } }
   @keyframes numpop { 0% { scale: .3; opacity: 0; } 35% { scale: 1.15; opacity: 1; } 100% { scale: 1; } }
   .count-cap { margin-top: 26px; color: #E9D4DA; font-weight: 700; min-height: 1.5em; font-size: 1.05rem; }
 
-  /* boom */
   .flash { position: fixed; inset: 0; background: #fff; opacity: 0; z-index: 60; pointer-events: none; }
   .flash.go { animation: flash .7s ease-out; }
   @keyframes flash { 0% { opacity: 0; } 15% { opacity: .95; } 100% { opacity: 0; } }
-  .rays { position: fixed; left: 50%; top: 50%; width: 180vmax; height: 180vmax; translate: -50% -50%; z-index: 39;
-    background: repeating-conic-gradient(rgba(245,200,215,.13) 0 8deg, transparent 8deg 22deg); border-radius: 50%;
-    opacity: 0; transition: opacity .8s; animation: spin 22s linear infinite; }
-  .rays.on { opacity: 1; }
-  .reveal-emoji { font-size: 110px; display: inline-block; transform: scale(0); filter: drop-shadow(0 0 30px rgba(255,200,220,.7)); }
+  .reveal-emoji { font-size: 104px; display: inline-block; transform: scale(0); filter: drop-shadow(0 0 30px rgba(255,200,220,.7)); }
   .reveal-emoji.pop { animation: babypop .9s cubic-bezier(.2,1.6,.4,1) forwards; }
   @keyframes babypop { from { transform: scale(0) rotate(-25deg); } to { transform: scale(1) rotate(0); } }
   .girl-words { margin-top: 18px; }
@@ -114,133 +100,249 @@
     color: transparent; text-shadow: none; filter: drop-shadow(0 0 22px rgba(242,160,186,.9)); }
   .girl-words span.slam { animation: slam .42s cubic-bezier(.2,1.4,.4,1) forwards; }
   @keyframes slam { from { opacity: 0; transform: scale(3) rotate(-6deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
-  .reveal-sub { color: #F3DDE4; margin-top: 16px; font-size: 1.05rem; opacity: 0; transition: opacity .8s .2s; }
-  .reveal-sub.on { opacity: 1; }
 
-  /* rising balloons (used on reveal) */
+  /* name reveal */
+  .and-name { opacity: 0; transform: translateY(10px); transition: all .8s ease; }
+  .and-name.on { opacity: 1; transform: none; }
+  .dots { display: inline-flex; gap: 10px; margin: 18px 0 4px; height: 14px; }
+  .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--gold-soft); opacity: .25; animation: beat 1.2s ease-in-out infinite; }
+  .dots i:nth-child(2) { animation-delay: .2s; } .dots i:nth-child(3) { animation-delay: .4s; }
+  @keyframes beat { 0%,100% { opacity: .25; transform: scale(.8); } 40% { opacity: 1; transform: scale(1.25); } }
+  .name-wrap { position: relative; margin: 4px auto 0; text-align: left; max-width: 100%; }
+  .name-script { font-family: var(--script); font-size: clamp(6rem, 30vw, 10.5rem); line-height: 1.12; padding: 0 .18em;
+    background: linear-gradient(100deg, #E9C77A 0%, #FFF3CC 35%, #F2B8C9 60%, #E9C77A 100%); background-size: 250% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 26px rgba(245,214,150,.55)); white-space: nowrap; animation: sheen 6s linear infinite; }
+  .name-clip { display: block; overflow: hidden; width: 0; }
+  .full-name { font-family: var(--display); font-weight: 500; letter-spacing: .34em; text-transform: uppercase; font-size: clamp(.82rem, 3.6vw, 1.05rem);
+    color: #F3DDE4; opacity: 0; transform: translateY(10px); transition: all .9s ease; margin-top: 2px; }
+  .full-name.on { opacity: 1; transform: none; }
+  .name-date { color: var(--gold-soft); letter-spacing: .3em; font-size: .8rem; margin-top: 14px; opacity: 0; transition: opacity .9s ease .3s; }
+  .name-date.on { opacity: .85; }
+  .meanings { margin-top: 16px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; min-height: 2.4em; }
+  .meanings span { font-family: var(--serif); font-style: italic; font-weight: 600; font-size: clamp(1.15rem, 5vw, 1.45rem); color: #F7DCE5;
+    opacity: 0; transform: translateY(8px) scale(.96); transition: all .7s cubic-bezier(.2,1.2,.4,1); }
+  .meanings span.on { opacity: 1; transform: none; }
+  .meanings i { font-style: normal; color: var(--gold-soft); opacity: 0; transition: opacity .6s ease; align-self: center; }
+  .meanings i.on { opacity: .7; }
+  .reveal-actions { margin-top: 26px; display: grid; gap: 10px; justify-items: center; opacity: 0; transform: translateY(12px);
+    transition: all .8s ease; pointer-events: none; }
+  .reveal-actions.on { opacity: 1; transform: none; pointer-events: auto; }
+  .btn-soft { border: 1.5px solid rgba(245,230,189,.55); background: rgba(255,255,255,.06); color: #F5E6BD; font-family: var(--display);
+    font-weight: 600; font-size: 1rem; padding: 14px 28px; border-radius: 999px; width: min(100%, 340px); }
+
   .balloon-layer { position: fixed; inset: 0; z-index: 55; pointer-events: none; overflow: hidden; }
   .bln { position: absolute; bottom: -180px; width: 64px; animation: rise linear forwards; }
   @keyframes rise { 0% { transform: translate(0,0) rotate(-4deg); } 50% { transform: translate(18px,-60vh) rotate(5deg); } 100% { transform: translate(-10px,-130vh) rotate(-4deg); } }
-
   canvas#confetti { position: fixed; inset: 0; z-index: 58; pointer-events: none; }
-
   #muteBtn { position: fixed; top: max(12px, env(safe-area-inset-top)); right: 12px; z-index: 70;
     width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,.25);
     background: rgba(40,16,30,.45); color: #fff; font-size: 19px; backdrop-filter: blur(6px); }
 
-  /* ================= MAIN PAGE ================= */
-  main { position: relative; z-index: 1; max-width: 760px; margin: 0 auto;
-    padding: max(18px, env(safe-area-inset-top)) 16px max(40px, env(safe-area-inset-bottom)); }
+  /* ======================= MAIN ======================= */
   .bokeh { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-  .bokeh i { position: absolute; border-radius: 50%; filter: blur(2px); opacity: .5; animation: floaty ease-in-out infinite; }
+  .bokeh i { position: absolute; border-radius: 50%; opacity: .45; animation: floaty ease-in-out infinite; }
   @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-26px); } }
+  main { position: relative; z-index: 1; max-width: 780px; margin: 0 auto;
+    padding: 12px 14px max(40px, env(safe-area-inset-bottom)); }
 
-  .replay { display: block; margin: 0 auto 14px; border: 1px solid #EBD3DC; background: rgba(255,255,255,.7);
-    color: var(--rose-deep); font-weight: 700; font-size: .85rem; padding: 8px 16px; border-radius: 999px; }
+  nav.pills { position: sticky; top: max(8px, env(safe-area-inset-top)); z-index: 20; margin: 0 -4px 14px; padding: 6px;
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; border-radius: 999px;
+    background: rgba(255,255,255,.78); backdrop-filter: blur(12px); box-shadow: 0 8px 26px rgba(120,60,90,.12); }
+  nav.pills::-webkit-scrollbar { display: none; }
+  nav.pills a { flex: none; text-decoration: none; color: var(--plum); font-weight: 700; font-size: .86rem;
+    padding: 9px 14px; border-radius: 999px; transition: background .3s, color .3s; white-space: nowrap; }
+  nav.pills a.on { background: linear-gradient(100deg, #D7869F, #9C6BB0); color: #fff; }
 
-  .card { background: rgba(255,255,255,.86); border: 1px solid rgba(255,255,255,.95); border-radius: 28px;
-    box-shadow: 0 20px 60px rgba(120,60,90,.12); padding: 30px 22px; margin-bottom: 22px; backdrop-filter: blur(8px);
-    opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.9,.3,1); }
+  .card { position: relative; background: rgba(255,255,255,.88); border: 1px solid rgba(255,255,255,.95); border-radius: 30px;
+    box-shadow: 0 22px 60px rgba(120,60,90,.12); padding: 30px 22px; margin-bottom: 20px;
+    opacity: 0; transform: translateY(26px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.9,.3,1); }
   .card.in { opacity: 1; transform: none; }
-  h2 { font-family: var(--display); font-weight: 600; font-size: 1.55rem; color: var(--plum); line-height: 1.25; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 1.6rem; color: var(--plum); line-height: 1.22; }
+  h2 .sc { font-family: var(--script); font-weight: 400; font-size: 1.35em; color: var(--rose-deep); }
   .lede { color: var(--soft); line-height: 1.6; margin-top: 6px; font-size: .98rem; }
-
-  /* hero */
-  .hero { text-align: center; padding-top: 18px; overflow: hidden; position: relative; }
-  .bunting { display: flex; justify-content: space-between; margin: -18px -8px 14px; padding: 0 4px; }
-  .bunting b { width: 7.5%; aspect-ratio: .9; clip-path: polygon(0 0, 100% 0, 50% 100%);
-    transform-origin: top center; animation: flutter 3s ease-in-out infinite; }
-  .bunting b:nth-child(odd) { animation-delay: -1.3s; }
-  @keyframes flutter { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
-  .hero .kicker { color: var(--gold); }
-  .hero h1 { font-family: var(--display); font-weight: 600; font-size: clamp(2rem, 8.4vw, 2.9rem); line-height: 1.15;
-    color: var(--plum); margin: 10px 0 4px; }
-  .hero h1 .bow { display: inline-block; animation: bob2 2.6s ease-in-out infinite; }
-  @keyframes bob2 { 0%,100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-6px) rotate(6deg); } }
-  .girl-pill { display: inline-block; margin: 8px 0 22px; padding: 7px 18px; border-radius: 999px; font-weight: 700;
-    color: #fff; background: linear-gradient(90deg, #D7869F, #B85F7B); box-shadow: 0 8px 20px rgba(184,95,123,.35); font-size: .92rem; letter-spacing: .04em; }
-  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
-  .fact { background: linear-gradient(160deg, #FFF, var(--blush)); border: 1px solid #F1DDE4; border-radius: 20px; padding: 16px 6px 14px; }
-  .fact .ic { font-size: 1.7rem; display: block; margin-bottom: 6px; }
-  .fact .v { font-family: var(--display); font-weight: 600; font-size: 1.28rem; color: var(--plum); display: block; line-height: 1.15; }
-  .fact .l { font-size: .74rem; color: var(--soft); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; display: block; }
-  .age { display: inline-block; padding: 9px 18px; border-radius: 999px;
-    background: #2E1424; color: #F5E6BD; font-weight: 700; font-size: .95rem; box-shadow: 0 10px 24px rgba(46,20,36,.25); }
-  .signoff { font-family: var(--display); color: var(--rose-deep); font-size: 1.12rem; margin: 20px 0 6px; }
-  .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 18px; }
-  .btn { border: none; border-radius: 999px; padding: 14px 22px; font-weight: 700; font-size: .98rem;
-    display: inline-block; text-align: center; word-spacing: .12em; }
+  .btn { border: none; border-radius: 999px; padding: 14px 22px; font-weight: 700; font-size: .96rem; display: inline-block; text-align: center; word-spacing: .1em; }
   .btn.primary { color: #fff; background: linear-gradient(100deg, #C4738C, #8F5FA8); box-shadow: 0 12px 26px rgba(143,95,168,.3); }
   .btn.ghost { color: var(--plum); background: #fff; border: 1.5px solid #EBD3DC; }
   .btn:active { transform: scale(.97); }
-  .hero-balloons { position: absolute; top: 60px; width: 56px; pointer-events: none; opacity: .9; animation: floaty 5s ease-in-out infinite; }
-  .hero-balloons.l { left: 6px; } .hero-balloons.r { right: 6px; animation-delay: -2.5s; }
 
-  /* gallery */
-  .gallery { margin-top: 18px; columns: 2; column-gap: 10px; }
-  .gallery button { display: block; width: 100%; border: none; padding: 0; margin: 0 0 10px; background: #F4E6EB;
-    border-radius: 16px; overflow: hidden; break-inside: avoid; position: relative; }
-  .gallery img { width: 100%; height: auto; display: block; transition: transform .5s ease; }
-  .gallery button:hover img { transform: scale(1.04); }
-  .soon { margin-top: 18px; border: 2px dashed #EAC9D5; border-radius: 22px; padding: 30px 18px; text-align: center; color: var(--soft); }
-  .soon .cam { font-size: 2.6rem; display: block; margin-bottom: 8px; animation: bob2 3s ease-in-out infinite; }
+  /* hero */
+  .hero { text-align: center; padding: 18px 18px 30px; overflow: hidden; }
+  .bunting { display: flex; justify-content: space-between; margin: -18px -8px 6px; padding: 0 4px; }
+  .bunting b { width: 7.5%; aspect-ratio: .9; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top center; animation: flutter 3s ease-in-out infinite; }
+  @keyframes flutter { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+  .hero .kicker { color: var(--gold); margin-top: 10px; }
+  .hero-name { font-family: var(--script); font-size: clamp(5.2rem, 26vw, 8.6rem); line-height: 1.05; padding: 0 .15em;
+    background: linear-gradient(100deg, #B8863B 0%, #E9C77A 30%, #C4738C 58%, #B8863B 100%); background-size: 250% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 7s linear infinite;
+    filter: drop-shadow(0 6px 14px rgba(194,154,69,.25)); margin-top: 4px; }
+  .hero-meaning { font-family: var(--serif); font-style: italic; font-weight: 600; color: var(--rose-deep); font-size: 1.12rem; margin-top: 8px; }
+  .hero-meaning b { color: var(--gold); font-weight: 600; }
+  .hero-surname { font-family: var(--display); letter-spacing: .36em; text-transform: uppercase; font-size: clamp(.78rem, 3.4vw, .98rem); color: var(--plum); font-weight: 600; }
+  .ribbon { display: inline-block; margin: 14px 0 20px; padding: 8px 20px; border-radius: 999px; color: #fff; font-weight: 700; font-size: .9rem;
+    background: linear-gradient(90deg, #D7869F, #B85F7B); box-shadow: 0 8px 20px rgba(184,95,123,.3); letter-spacing: .04em; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+  .fact { min-width: 0; background: linear-gradient(160deg, #FFF, #FDF3F6); border: 1px solid #F1DDE4; border-radius: 22px; padding: 16px 6px 14px; transition: transform .3s; }
+  .fact:hover { transform: translateY(-3px); }
+  .fact .ic { font-size: 1.65rem; display: block; margin-bottom: 6px; }
+  .fact .v { font-family: var(--display); font-weight: 600; font-size: 1.24rem; color: var(--plum); display: block; line-height: 1.15; }
+  .fact .l { font-size: .72rem; color: var(--soft); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; display: block; }
+  .ticker { background: #2E1424; color: #F5E6BD; border-radius: 22px; padding: 14px 10px; margin: 4px auto 0; max-width: 460px;
+    box-shadow: 0 12px 28px rgba(46,20,36,.25); }
+  .ticker small { display: block; font-size: .74rem; letter-spacing: .2em; text-transform: uppercase; color: #E9C9D4; margin-bottom: 8px; }
+  .ticker .units { display: flex; justify-content: center; gap: 8px; }
+  .ticker .u { min-width: 58px; }
+  .ticker .u b { display: block; font-family: var(--display); font-size: 1.6rem; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+  .ticker .u span { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: #D9BBC8; }
+  .love { margin-top: 20px; }
+  .love-btn { position: relative; border: none; border-radius: 999px; padding: 16px 30px; font-family: var(--display); font-weight: 600; font-size: 1.08rem;
+    color: #fff; background: linear-gradient(100deg, #E08BA5, #C4738C 50%, #A45E8E); box-shadow: 0 14px 30px rgba(196,115,140,.4); }
+  .love-btn:active { transform: scale(.95); }
+  .love-count { display: block; margin-top: 10px; color: var(--rose-deep); font-weight: 700; font-size: .95rem; min-height: 1.4em; }
+  .float-heart { position: fixed; z-index: 57; pointer-events: none; font-size: 26px; animation: heartup 1.6s ease-out forwards; }
+  @keyframes heartup { 0% { opacity: 1; transform: translate(0,0) scale(.6); } 100% { opacity: 0; transform: translate(var(--dx), -220px) scale(1.3) rotate(var(--rot)); } }
+  .signoff { font-family: var(--serif); font-style: italic; font-weight: 600; color: var(--rose-deep); font-size: 1.28rem; margin: 22px 0 4px; line-height: 1.35; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .pop-balloon { position: absolute; width: 58px; z-index: 3; border: none; background: none; padding: 0; animation: floaty 5s ease-in-out infinite; }
+  .pop-balloon svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 8px 12px rgba(120,60,90,.18)); }
+  .pop-balloon.popped { animation: popout .35s ease-out forwards; pointer-events: none; }
+  @keyframes popout { to { transform: scale(1.8); opacity: 0; } }
+  .hint { font-size: .78rem; color: var(--soft); margin-top: 8px; font-weight: 600; }
+  .spark { position: absolute; z-index: 4; pointer-events: none; font-size: 16px; animation: spark .8s ease-out forwards; }
+  @keyframes spark { 0% { opacity: 1; transform: translate(0,0) scale(.4); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.2); } }
 
-  .lightbox { position: fixed; inset: 0; z-index: 80; background: rgba(20,8,15,.94); display: flex; align-items: center; justify-content: center;
-    padding: 50px 10px; touch-action: pan-y; }
-  .lightbox img { max-width: 100%; max-height: 100%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+  /* photos */
+  .polaroids { display: flex; justify-content: center; gap: 12px; margin: 22px 0 8px; perspective: 800px; }
+  .polaroid { width: 30%; max-width: 170px; background: #fff; padding: 8px 8px 30px; border-radius: 6px; box-shadow: 0 12px 26px rgba(90,40,70,.16); transition: transform .4s; }
+  .polaroid:nth-child(1) { transform: rotate(-7deg) translateY(8px); } .polaroid:nth-child(2) { transform: rotate(2deg); z-index: 2; } .polaroid:nth-child(3) { transform: rotate(8deg) translateY(10px); }
+  .polaroid:hover { transform: rotate(0) translateY(-6px) scale(1.04); }
+  .polaroid .ph { aspect-ratio: 1; border-radius: 3px; display: grid; place-items: center; font-size: 2rem;
+    background: linear-gradient(110deg, #F6E4EB 20%, #FBF1F4 40%, #F6E4EB 60%); background-size: 250% 100%; animation: shimmer 2.2s linear infinite; }
+  @keyframes shimmer { to { background-position: -250% 0; } }
+  .soon-t { text-align: center; margin-top: 10px; }
+  .soon-t strong { font-family: var(--display); color: var(--plum); font-size: 1.12rem; }
+  .soon-t p { color: var(--soft); margin-top: 4px; }
+  .gallery { margin-top: 18px; columns: 2; column-gap: 12px; }
+  .gallery button { display: block; width: 100%; border: none; background: #fff; padding: 7px 7px 22px; margin: 0 0 12px; border-radius: 8px;
+    break-inside: avoid; box-shadow: 0 10px 22px rgba(90,40,70,.14); transition: transform .35s; }
+  .gallery button:nth-child(odd) { transform: rotate(-1.4deg); } .gallery button:nth-child(even) { transform: rotate(1.2deg); }
+  .gallery button:hover { transform: rotate(0) scale(1.03); }
+  .gallery img { width: 100%; height: auto; display: block; border-radius: 4px; }
+  .lightbox { position: fixed; inset: 0; z-index: 80; background: rgba(20,8,15,.95); display: flex; align-items: center; justify-content: center; padding: 50px 10px; }
+  .lightbox img { max-width: 100%; max-height: 100%; border-radius: 12px; }
   .lb-cap { position: absolute; bottom: max(16px, env(safe-area-inset-bottom)); left: 0; right: 0; text-align: center; color: #F3DDE4; font-weight: 600; padding: 0 20px; }
   .lb-btn { position: absolute; border: none; background: rgba(255,255,255,.14); color: #fff; width: 46px; height: 46px; border-radius: 50%; font-size: 22px; }
   .lb-close { top: max(12px, env(safe-area-inset-top)); right: 12px; }
   .lb-prev { left: 8px; top: 50%; translate: 0 -50%; } .lb-next { right: 8px; top: 50%; translate: 0 -50%; }
 
-  /* results */
-  .res { border-radius: 22px; padding: 20px 18px; margin-top: 16px; border: 1px solid #F0DFE6; background: linear-gradient(170deg, #fff, #FFF8FA); }
-  .res h3 { font-family: var(--display); font-weight: 600; font-size: 1.18rem; color: var(--plum); display: flex; align-items: center; gap: 8px; }
-  .res p { color: var(--soft); font-size: .95rem; line-height: 1.55; margin-top: 6px; }
+  /* journey */
+  .timeline { position: relative; margin: 24px 0 4px 8px; padding-left: 34px; }
+  .timeline::before { content: ""; position: absolute; left: 11px; top: 6px; bottom: 6px; width: 3px; border-radius: 3px; background: #EFDDE5; }
+  .timeline .fill { position: absolute; left: 11px; top: 6px; width: 3px; border-radius: 3px; height: 0;
+    background: linear-gradient(#E08BA5, #C29A45); transition: height 1.8s cubic-bezier(.2,.9,.3,1); }
+  .ms { position: relative; margin-bottom: 18px; }
+  .ms .dot { position: absolute; left: -34px; top: 2px; width: 25px; height: 25px; border-radius: 50%; background: #fff; border: 3px solid #EFDDE5;
+    display: grid; place-items: center; font-size: 12px; }
+  .ms.done .dot { background: linear-gradient(135deg, #E08BA5, #C29A45); border-color: #fff; color: #fff; box-shadow: 0 0 0 4px rgba(224,139,165,.2); }
+  .ms.next .dot { border-color: #E08BA5; animation: nextpulse 2s ease-in-out infinite; }
+  @keyframes nextpulse { 0%,100% { box-shadow: 0 0 0 0 rgba(224,139,165,.45); } 50% { box-shadow: 0 0 0 8px rgba(224,139,165,0); } }
+  .ms h4 { font-family: var(--display); font-weight: 600; color: var(--plum); font-size: 1.05rem; }
+  .ms .when { font-size: .84rem; color: var(--soft); font-weight: 700; }
+  .ms .when em { font-style: normal; color: var(--rose-deep); }
+  .ms p { color: var(--ink); font-size: .92rem; margin-top: 3px; line-height: 1.5; }
+  .ms:not(.done) h4 { color: #8E7A9E; }
+
+  /* guesses */
+  .finder { margin-top: 18px; border-radius: 24px; padding: 18px; background: linear-gradient(160deg, #2E1424, #4B2239); color: #fff; }
+  .finder h3 { font-family: var(--display); font-weight: 600; font-size: 1.18rem; }
+  .finder p.s { color: #E9C9D4; font-size: .9rem; margin-top: 4px; }
+  .search { position: relative; margin-top: 12px; }
+  .search input { width: 100%; font: inherit; font-size: 16px; font-weight: 600; padding: 14px 16px 14px 44px; border-radius: 16px; border: none; outline: none; color: var(--ink); }
+  .search::before { content: "🔎"; position: absolute; left: 14px; top: 50%; translate: 0 -50%; font-size: 1.05rem; z-index: 1; }
+  .suggest { list-style: none; margin-top: 6px; background: #fff; border-radius: 14px; overflow: hidden; color: var(--ink); max-height: 230px; overflow-y: auto; }
+  .suggest li button { width: 100%; text-align: left; border: none; background: none; padding: 12px 16px; font-weight: 700; border-bottom: 1px solid #F3E7EC; }
+  .suggest li button:hover, .suggest li button:focus { background: #FDF1F5; outline: none; }
+  .mine { margin-top: 14px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 18px; padding: 16px; animation: popin .5s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes popin { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+  .mine .title { font-family: var(--display); font-weight: 600; font-size: 1.25rem; color: #F5E6BD; }
+  .mine .rank { font-size: .88rem; color: #E9C9D4; margin-top: 2px; }
+  .mine ul { list-style: none; margin-top: 12px; display: grid; gap: 8px; }
+  .mine li { display: flex; gap: 10px; align-items: flex-start; font-size: .94rem; line-height: 1.4; }
+  .mine li b { flex: none; width: 24px; text-align: center; }
+  .podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; align-items: end; }
+  .pod { text-align: center; border-radius: 16px 16px 8px 8px; padding: 10px 4px; background: rgba(255,255,255,.1); }
+  .pod .m { font-size: 1.6rem; display: block; }
+  .pod b { display: block; font-size: .88rem; margin-top: 2px; }
+  .pod.p1 { padding-top: 20px; background: rgba(245,230,189,.22); } .pod.p2 { padding-top: 12px; }
+  .pod small { color: #E9C9D4; font-size: .74rem; }
+  .res { border-radius: 22px; padding: 18px; margin-top: 14px; border: 1px solid #F0DFE6; background: linear-gradient(170deg, #fff, #FFF8FA); }
+  .res h3 { font-family: var(--display); font-weight: 600; font-size: 1.12rem; color: var(--plum); }
+  .res p { color: var(--soft); font-size: .93rem; line-height: 1.55; margin-top: 6px; }
   .split { height: 34px; border-radius: 12px; overflow: hidden; display: flex; margin: 14px 0 8px; background: #eee; }
   .split .g { background: linear-gradient(90deg, #E39AB1, #C4738C); width: 0; transition: width 1.6s cubic-bezier(.2,.9,.3,1);
     color: #fff; font-weight: 700; display: flex; align-items: center; padding-left: 12px; font-size: .9rem; white-space: nowrap; }
-  .split .b { background: linear-gradient(90deg, #7FA1C1, #5F84A8); flex: 1; color: #fff; font-weight: 700;
-    display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: .9rem; white-space: nowrap; }
-  .legend { display: flex; justify-content: space-between; font-size: .85rem; font-weight: 700; color: var(--soft); }
+  .split .b { background: linear-gradient(90deg, #7FA1C1, #5F84A8); flex: 1; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: .9rem; }
+  .legend { display: flex; justify-content: space-between; font-size: .84rem; font-weight: 700; color: var(--soft); }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .chip { padding: 7px 13px; border-radius: 999px; font-weight: 700; font-size: .9rem; background: #fff; border: 1.5px solid #EBD3DC; color: var(--plum); }
+  .chip { padding: 7px 13px; border-radius: 999px; font-weight: 700; font-size: .88rem; background: #fff; border: 1.5px solid #EBD3DC; color: var(--plum); }
   .chip.win { background: linear-gradient(100deg, #FFF3D1, #FBE3B0); border-color: #EDCB7A; color: #6B4E12; }
   .chip.win::before { content: "👑 "; }
   .chip small { font-weight: 600; color: var(--soft); margin-left: 4px; }
-  .runners { font-size: .88rem; color: var(--soft); margin-top: 12px; line-height: 1.6; }
-  .toggle { margin-top: 12px; border: none; background: none; color: var(--rose-deep); font-weight: 700; font-size: .92rem; padding: 4px 0; }
-  .pink-list .chip { font-size: .82rem; padding: 5px 11px; border-color: #F2D2DD; }
+  .runners { font-size: .86rem; color: var(--soft); margin-top: 10px; line-height: 1.6; }
+  .toggle { margin-top: 10px; border: none; background: none; color: var(--rose-deep); font-weight: 700; font-size: .9rem; padding: 4px 0; }
+  .pink-list .chip { font-size: .8rem; padding: 5px 11px; border-color: #F2D2DD; }
 
   /* blessings */
-  label.f { display: block; font-weight: 700; font-size: .88rem; color: var(--plum); margin: 16px 0 7px; }
-  input.t, textarea.t { width: 100%; font: inherit; font-size: 16px; font-weight: 600; color: var(--ink);
-    padding: 14px 16px; border-radius: 16px; border: 1.5px solid #EBD3DC; background: #fff; outline: none; }
+  .see-wall { margin-top: 12px; border: none; background: none; color: var(--rose-deep); font-weight: 700; font-size: .92rem; }
+  .compose { margin-top: 18px; border-radius: 24px; padding: 18px; background: linear-gradient(160deg, #FFF7FA, #F8F0FB); border: 1px solid #F0DFE8; }
+  label.f { display: block; font-weight: 700; font-size: .86rem; color: var(--plum); margin: 14px 0 7px; }
+  label.f:first-child { margin-top: 0; }
+  input.t, textarea.t { width: 100%; font: inherit; font-size: 16px; font-weight: 600; color: var(--ink); padding: 13px 15px; border-radius: 15px;
+    border: 1.5px solid #EBD3DC; background: #fff; outline: none; }
   input.t:focus, textarea.t:focus { border-color: var(--rose); box-shadow: 0 0 0 4px rgba(196,115,140,.14); }
-  textarea.t { min-height: 110px; resize: vertical; line-height: 1.5; }
+  textarea.t { min-height: 104px; resize: vertical; line-height: 1.5; }
   .seg { display: flex; gap: 8px; }
-  .seg button { flex: 1; padding: 12px; border-radius: 14px; border: 1.5px solid #EBD3DC; background: #fff; font-weight: 700; color: var(--plum); }
+  .seg button { flex: 1; padding: 11px; border-radius: 14px; border: 1.5px solid #EBD3DC; background: #fff; font-weight: 700; color: var(--plum); }
   .seg button.on { background: var(--rose-soft); border-color: var(--rose); }
-  .err { color: #B3355B; font-weight: 700; font-size: .88rem; min-height: 1.3em; margin-top: 10px; }
-  .thanks { text-align: center; padding: 16px 4px 4px; }
-  .thanks .big { font-size: 3rem; display: block; margin-bottom: 8px; }
-  .count-note { text-align: right; font-size: .78rem; color: var(--soft); margin-top: 4px; }
+  .err { color: #B3355B; font-weight: 700; font-size: .86rem; min-height: 1.2em; margin-top: 8px; }
+  .count-note { text-align: right; font-size: .76rem; color: var(--soft); margin-top: 4px; }
+  .thanks { text-align: center; padding: 6px 2px; animation: popin .5s cubic-bezier(.2,1.4,.4,1); }
+  .thanks img { width: 100%; max-width: 330px; border-radius: 18px; box-shadow: 0 16px 36px rgba(120,60,90,.2); margin: 12px auto 4px; display: block; }
+  .filters { display: flex; gap: 8px; margin: 22px 0 12px; flex-wrap: wrap; align-items: center; }
+  .filters button { border: 1.5px solid #EBD3DC; background: #fff; border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: .86rem; color: var(--plum); }
+  .filters button.on { background: var(--plum); border-color: var(--plum); color: #fff; }
+  .filters .n { margin-left: auto; font-size: .84rem; color: var(--soft); font-weight: 700; }
+  .wall { columns: 2; column-gap: 12px; }
+  .note { break-inside: avoid; margin-bottom: 12px; border-radius: 20px; padding: 16px 16px 12px; position: relative;
+    box-shadow: 0 8px 20px rgba(120,60,90,.08); border: 1px solid rgba(255,255,255,.9); animation: popin .5s ease both; }
+  .note q { display: block; font-family: var(--serif); font-style: italic; font-weight: 600; font-size: 1.08rem; line-height: 1.42; color: var(--ink); quotes: "“" "”"; }
+  .note .who { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 10px; }
+  .note .who b { font-size: .86rem; color: var(--rose-deep); }
+  .note .tag { font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--soft); background: rgba(255,255,255,.7); padding: 3px 8px; border-radius: 999px; }
+  .note .new { position: absolute; top: -8px; right: 12px; background: var(--gold); color: #fff; font-size: .68rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+  .note .like { border: none; background: none; font-size: .9rem; color: var(--soft); font-weight: 700; padding: 2px 4px; }
+  .note .like.on { color: #D0567E; }
+  .more { display: block; margin: 8px auto 0; }
 
-  footer { text-align: center; color: var(--soft); font-size: .88rem; padding: 10px 0 20px; }
-  footer b { color: var(--rose-deep); }
+  footer { text-align: center; color: var(--soft); font-size: .88rem; padding: 14px 0 22px; }
+  footer .n { font-family: var(--script); font-size: 2rem; color: var(--rose-deep); display: block; line-height: 1.1; }
+  footer button { margin-top: 10px; border: 1px solid #EBD3DC; background: rgba(255,255,255,.7); color: var(--rose-deep); font-weight: 700; font-size: .84rem; padding: 8px 16px; border-radius: 999px; }
 
-  @media (max-width: 380px) {
+  @media (max-width: 520px) {
+    .wall { columns: 1; }
+    .card { padding: 26px 16px; border-radius: 26px; }
     .facts { gap: 7px; } .fact .v { font-size: 1.05rem; } .fact .ic { font-size: 1.4rem; }
-    .card { padding: 26px 16px; }
+    .ticker .u { min-width: 50px; } .ticker .u b { font-size: 1.38rem; }
+    .pop-balloon { width: 46px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    .name-clip { width: auto !important; }
   }
 </style>
 </head>
 <body class="locked">
 
-<!-- ================= REVEAL FLOW ================= -->
 <div id="nightBg"></div>
 <canvas id="sky"></canvas>
 <div class="moon" id="moon"></div>
@@ -251,78 +353,175 @@
 <canvas id="confetti"></canvas>
 <button id="muteBtn" type="button" aria-label="Sound on or off">🔊</button>
 
+<!-- 1. intro -->
 <section class="overlay" id="ovIntro">
   <div class="inner">
     <span class="gift" aria-hidden="true">🎁</span>
     <p class="kicker" style="margin-top:14px">The wait is over</p>
-    <h1 class="intro-title">Someone <em>very special</em><br>has arrived…</h1>
+    <h1 class="intro-title">Someone <span class="shine">very special</span><br>has arrived…</h1>
     <p class="intro-sub">Aman &amp; Vandana have the happiest news to share.<br>Sound on for the full surprise 🔊</p>
     <button class="btn-glow" id="meetBtn" type="button">Meet our little one ✨</button>
   </div>
 </section>
 
+<!-- 2. countdown -->
 <section class="overlay gone" id="ovCount" aria-live="polite">
   <div class="inner">
     <div class="ring"><span id="countNum">3</span></div>
-    <p class="count-cap" id="countCap">Drumroll please…</p>
+    <p class="count-cap" id="countCap"></p>
   </div>
 </section>
 
+<!-- 3. it's a girl -->
 <section class="overlay gone" id="ovBoom" aria-live="polite">
   <div class="inner">
     <span class="reveal-emoji" id="revealEmoji" aria-hidden="true">👶🏻</span>
-    <div class="girl-words" id="girlWords"><span>IT'S</span><span>A</span><span class="pink">GIRL!</span></div>
-    <p class="reveal-sub" id="revealSub">Our little princess arrived on 12 September 🎀</p>
+    <div class="girl-words" id="girlWords"><span>IT'S</span> <span>A</span> <span class="pink">GIRL!</span></div>
   </div>
 </section>
 
-<!-- ================= MAIN PAGE ================= -->
+<!-- 4. name reveal -->
+<section class="overlay gone" id="ovName" aria-live="polite">
+  <div class="inner">
+    <p class="kicker and-name" id="andName">…and her name is</p>
+    <div class="dots" id="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="name-wrap" id="nameWrap"><div class="name-clip" id="nameClip"><div class="name-script" id="nameScript">Ivika</div></div></div>
+    <p class="full-name" id="fullName">Ivika Sharma Bhatnagar</p>
+    <div class="meanings" id="meanings" aria-label="Meaning of Ivika: grace, divine light, protector of the earth">
+      <span>grace</span><i>·</i><span>divine light</span><i>·</i><span>protector of the earth</span>
+    </div>
+    <p class="name-date" id="nameDate">12 · 09 · 2026</p>
+    <div class="reveal-actions" id="revealActions">
+      <button class="btn-glow" id="blessFirstBtn" type="button">💌 Leave a blessing for Ivika</button>
+      <button class="btn-soft" id="enterBtn" type="button">Enter Ivika's world ✨</button>
+    </div>
+  </div>
+</section>
+
 <div class="bokeh" id="bokeh" aria-hidden="true"></div>
 
 <main id="main" hidden>
-  <button class="replay" id="replayBtn" type="button" hidden>✨ Replay the reveal</button>
+  <nav class="pills" id="pills" aria-label="Sections">
+    <a href="#hero" data-s="hero">💗 Ivika</a>
+    <a href="#blessNow" data-s="blessNow">💌 Bless her</a>
+    <a href="#photosCard" data-s="photosCard">📸 Photos</a>
+    <a href="#journeyCard" data-s="journeyCard">🌱 Journey</a>
+    <a href="#resultsCard" data-s="resultsCard">🏆 Your guess</a>
+    <a href="#wallCard" data-s="wallCard">💝 Blessings</a>
+  </nav>
 
-  <!-- hero -->
+  <!-- HERO -->
   <article class="card hero" id="hero">
     <div class="bunting" id="bunting" aria-hidden="true"></div>
-    <svg class="hero-balloons l" viewBox="0 0 60 150" aria-hidden="true"><path d="M30 94 C 26 110 34 124 30 148" stroke="#D9A3B6" stroke-width="1.4" fill="none"/><ellipse cx="30" cy="40" rx="24" ry="30" fill="#E7A2B8"/><path d="M26 69 L34 69 L30 76 Z" fill="#E7A2B8"/><ellipse cx="22" cy="30" rx="6" ry="9" fill="#fff" opacity=".45"/></svg>
-    <svg class="hero-balloons r" viewBox="0 0 60 150" aria-hidden="true"><path d="M30 94 C 34 110 26 124 30 148" stroke="#D8C28E" stroke-width="1.4" fill="none"/><ellipse cx="30" cy="40" rx="24" ry="30" fill="#F2D797"/><path d="M26 69 L34 69 L30 76 Z" fill="#F2D797"/><ellipse cx="22" cy="30" rx="6" ry="9" fill="#fff" opacity=".45"/></svg>
 
     <p class="kicker">Welcome to the world</p>
-    <h1>Our baby girl<br>is here <span class="bow">🎀</span></h1>
-    <span class="girl-pill">IT'S A GIRL</span>
+    <h1 class="hero-name">Ivika</h1>
+    <p class="hero-surname">Sharma Bhatnagar</p>
+    <p class="hero-meaning">grace <b>·</b> divine light <b>·</b> protector of the earth</p>
+    <span class="ribbon">🎀 Our baby girl 🎀</span>
 
     <div class="facts">
       <div class="fact"><span class="ic">📅</span><span class="v">12 Sept</span><span class="l">Sat · 2026</span></div>
       <div class="fact"><span class="ic">⏰</span><span class="v">3:50 AM</span><span class="l">Time of birth</span></div>
-      <div class="fact"><span class="ic">⚖️</span><span class="v">3.3 kg</span><span class="l">Weight</span></div>
+      <div class="fact"><span class="ic">⚖️</span><span class="v"><span id="kg">3.3</span> kg</span><span class="l">Weight</span></div>
     </div>
 
-    <span class="age" id="age">🌙 A few days old</span>
-    <p class="signoff">With endless love &amp; gratitude,<br>Aman &amp; Vandana</p>
+    <div class="ticker" aria-live="off">
+      <small>Ivika has been in the world for</small>
+      <div class="units">
+        <div class="u"><b id="tD">0</b><span>days</span></div>
+        <div class="u"><b id="tH">00</b><span>hrs</span></div>
+        <div class="u"><b id="tM">00</b><span>min</span></div>
+        <div class="u"><b id="tS">00</b><span>sec</span></div>
+      </div>
+    </div>
 
+    <div class="love">
+      <button class="love-btn" id="loveBtn" type="button">💗 Send Ivika a hug</button>
+      <span class="love-count" id="loveCount">Tap as many times as you like</span>
+    </div>
+
+    <p class="signoff">With endless love &amp; gratitude,<br>Aman &amp; Vandana</p>
     <div class="actions">
       <button class="btn primary" id="shareBtn" type="button">💌 Share the news</button>
       <button class="btn ghost" id="cardBtn" type="button">🖼️ Save announcement card</button>
     </div>
+    <p class="hint">Psst — pop the balloons 🎈</p>
   </article>
 
-  <!-- photos -->
-  <article class="card" id="photosCard">
-    <h2>First glimpses 📸</h2>
-    <p class="lede" id="photosLede">Tiny fingers, tiny toes — the very first photos of our little girl.</p>
-    <div class="gallery" id="gallery"></div>
-    <div class="soon" id="soon" hidden>
-      <span class="cam">📷</span>
-      <strong style="color:var(--plum)">Photos coming very soon</strong><br>
-      She's catching up on sleep. Check back in a little while 🌙
+  <!-- BLESS HER (asked first) -->
+  <article class="card" id="blessNow">
+    <h2>Bless <span class="sc">Ivika</span> 💌</h2>
+    <p class="lede">Leave a note for our daughter — every blessing is saved for her to read one day.</p>
+    <div class="compose">
+      <form id="blessForm" novalidate>
+        <label class="f" for="bName">Your name</label>
+        <input class="t" id="bName" maxlength="40" autocomplete="name" placeholder="e.g. Priya Sharma">
+        <label class="f">You are…</label>
+        <div class="seg" role="group" aria-label="Relation">
+          <button type="button" data-rel="Family">👨‍👩‍👧 Family</button>
+          <button type="button" data-rel="Friend">🤝 Friend</button>
+        </div>
+        <label class="f" for="bMsg">Your blessing for Ivika</label>
+        <textarea class="t" id="bMsg" maxlength="500" placeholder="Welcome to the world, little Ivika…"></textarea>
+        <div class="count-note"><span id="bCount">0</span>/500</div>
+        <div class="err" id="bErr" role="alert"></div>
+        <button class="btn primary" style="width:100%;margin-top:4px" id="bSend" type="submit">Send my blessing 🎀</button>
+      </form>
+      <div class="thanks" id="bThanks" hidden>
+        <h3 style="font-family:var(--display);color:var(--plum);font-size:1.25rem" id="bThanksTitle">Thank you!</h3>
+        <p class="lede" style="margin-top:2px">Here's a little thank-you card from Ivika 💗</p>
+        <img id="thanksImg" alt="Thank-you card from Ivika">
+        <div class="actions">
+          <button class="btn primary" id="thanksSave" type="button">💾 Save my card</button>
+          <button class="btn ghost" id="bAgain" type="button">Write another</button>
+        </div>
+        <button class="see-wall" id="seeWall" type="button">See all the blessings for Ivika ↓</button>
+      </div>
     </div>
+
   </article>
 
-  <!-- results -->
+  <!-- PHOTOS -->
+  <article class="card" id="photosCard">
+    <h2>First glimpses of <span class="sc">Ivika</span></h2>
+    <div id="soon">
+      <div class="polaroids" aria-hidden="true">
+        <div class="polaroid"><div class="ph">🍼</div></div>
+        <div class="polaroid"><div class="ph">📸</div></div>
+        <div class="polaroid"><div class="ph">🎀</div></div>
+      </div>
+      <div class="soon-t">
+        <strong>Photos coming soon</strong>
+        <p>Ivika is busy with her very important naps. Her first photos will be right here 🌙</p>
+      </div>
+    </div>
+    <div class="gallery" id="gallery" hidden></div>
+  </article>
+
+  <!-- JOURNEY -->
+  <article class="card" id="journeyCard">
+    <h2>Ivika's journey <span aria-hidden="true">🌱</span></h2>
+    <p class="lede">The little (and big) moments in her first year. We'll keep adding to this.</p>
+    <div class="timeline" id="timeline"><div class="fill" id="tlFill"></div></div>
+  </article>
+
+  <!-- GUESSES -->
   <article class="card" id="resultsCard">
     <h2>Who called it? 🏆</h2>
-    <p class="lede">Remember the prediction game? The results are finally in — bragging rights are officially settled.</p>
+    <p class="lede">Remember the prediction game? The results are in — bragging rights are officially settled.</p>
+
+    <div class="finder">
+      <h3>How close was your guess? 🔮</h3>
+      <p class="s">Type your name to see your prediction and your rank.</p>
+      <div class="search">
+        <label class="sr" for="findName">Your name</label>
+        <input id="findName" type="text" autocomplete="off" placeholder="Start typing your name…" maxlength="40">
+      </div>
+      <ul class="suggest" id="suggest" hidden></ul>
+      <div class="mine" id="mine" hidden></div>
+      <div class="podium" id="podium"></div>
+    </div>
 
     <div class="res">
       <h3>💗 Boy or girl?</h3>
@@ -332,14 +531,12 @@
       <button class="toggle" id="pinkToggle" type="button"></button>
       <div class="chips pink-list" id="pinkList" hidden></div>
     </div>
-
     <div class="res">
       <h3>⚖️ Weight: 3.3 kg</h3>
       <p id="weightLine"></p>
       <div class="chips" id="weightWin"></div>
       <p class="runners" id="weightRun"></p>
     </div>
-
     <div class="res">
       <h3>🔮 The Baby Oracle</h3>
       <p id="dateLine"></p>
@@ -348,42 +545,32 @@
     </div>
   </article>
 
-  <!-- blessings -->
-  <article class="card" id="blessCard">
-    <h2>Send your blessings 💌</h2>
-    <p class="lede">Leave a little note for our daughter. We're saving every single one to read to her one day.</p>
-
-    <form id="blessForm" novalidate>
-      <label class="f" for="bName">Your name</label>
-      <input class="t" id="bName" maxlength="40" autocomplete="name" placeholder="e.g. Priya">
-      <label class="f">You are…</label>
-      <div class="seg" role="group" aria-label="Relation">
-        <button type="button" data-rel="Family">👨‍👩‍👧 Family</button>
-        <button type="button" data-rel="Friend">🤝 Friend / Colleague</button>
-      </div>
-      <label class="f" for="bMsg">Your blessing</label>
-      <textarea class="t" id="bMsg" maxlength="500" placeholder="Welcome to the world, little one…"></textarea>
-      <div class="count-note"><span id="bCount">0</span>/500</div>
-      <div class="err" id="bErr" role="alert"></div>
-      <button class="btn primary" style="width:100%;margin-top:6px" id="bSend" type="submit">Send my blessing 🎀</button>
-    </form>
-
-    <div class="thanks" id="bThanks" hidden>
-      <span class="big">💗</span>
-      <h2 id="bThanksTitle">Thank you!</h2>
-      <p class="lede">Your blessing is saved for her. It means the world to us.</p>
-      <button class="btn ghost" style="margin-top:16px" id="bAgain" type="button">Send another</button>
+  <!-- PREVIOUS BLESSINGS (towards the end) -->
+  <article class="card" id="wallCard">
+    <h2>Blessings for <span class="sc">Ivika</span></h2>
+    <p class="lede">All the love she has received so far — from before she arrived, and since.</p>
+    <div class="filters" role="group" aria-label="Filter blessings">
+      <button type="button" class="on" data-f="all">All</button>
+      <button type="button" data-f="Family">Family</button>
+      <button type="button" data-f="Friend">Friends</button>
+      <span class="n" id="wallCount"></span>
     </div>
+    <div class="wall" id="wall"></div>
+    <button class="btn ghost more" id="moreBtn" type="button" hidden>Show more blessings</button>
   </article>
 
-  <footer>Made with love by <b>Aman &amp; Vandana</b> · 12.09.2026 🌙</footer>
+  <footer>
+    <span class="n">Ivika</span>
+    Made with love by Aman &amp; Vandana · 12.09.2026 🌙<br>
+    <button type="button" id="replayBtn">✨ Replay the reveal</button>
+  </footer>
 </main>
 
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
   <img id="lbImg" alt="">
   <button class="lb-btn lb-close" id="lbClose" type="button" aria-label="Close">✕</button>
-  <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="Previous photo">‹</button>
-  <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="Next photo">›</button>
+  <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="Previous">‹</button>
+  <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="Next">›</button>
   <div class="lb-cap" id="lbCap"></div>
 </div>
 
@@ -392,17 +579,21 @@
 const BIRTH = new Date("2026-09-12T03:50:00+05:30");
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwXuUsGkQSibQVm_SmWBTfT6siLTtd4XuqVvgMt6iOssC5W2BWk6JX9ACzCaqH-XoK42Q/exec";
 const PAGE_URL = "https://amanbhatnagar007.github.io/open-me/";
-/* results baked in at publish time — predictions closed when she arrived */
+/* snapshots baked in at publish time; the wall and love counter upgrade to live data once the v6 script is deployed */
 const RESULTS = {"people":115,"voted":92,"girls":57,"boys":35,"teamPink":["Abhas","Abhinav T.","Aditya D.","Akshay G.","Aman","Anuj","Arpit S.","Ashish","Ashish B.","Avi","Ayush G.","Ayushi G.","Charu K.","Deblina G.","Gagan","Juhi","Kannan P.","Kathleen L.","Kevin","Kritika","Manoj","Manoj B.","Mayank","Mayuri","Megha","Mia S.","Mitali G.","Nandita","Neha","Nikhil S.","Nipun","Niyati U.","Parul","Payal","Pm","Prachi","Prakhar P.","Prateek B.","Preeti S.","Punith","Rajan D.","Ramendra","Ramendra R.","Saamarth G.","Sakshi J.","Sanghamitra T.","Shreya C.","Shubham","Simran","Tanushree J.","Taylor G.","Tweesha T.","Unnmalini B.","Utkarsh N.","Vanita","Varun J.","Yogesh"],"dateWinners":[{"off":1,"name":"Arjav","guess":"13 Sep"},{"off":1,"name":"Chirag B.","guess":"13 Sep"},{"off":1,"name":"Manoj B.","guess":"13 Sep"}],"dateRunners":[{"off":2,"name":"Abhishek M.","guess":"10 Sep"},{"off":2,"name":"Ashish","guess":"14 Sep"},{"off":3,"name":"Gagan","guess":"9 Sep"},{"off":3,"name":"Taylor G.","guess":"15 Sep"}],"weightWinners":[{"off":0.0,"name":"Mayank","guess":3.3},{"off":0.0,"name":"Mudit K.","guess":3.3},{"off":0.0,"name":"Niyati U.","guess":3.3},{"off":0.0,"name":"Rajesh B.","guess":3.3},{"off":0.0,"name":"Swati","guess":3.3}],"weightRunners":[{"off":0.1,"name":"Abhinav T.","guess":3.2},{"off":0.1,"name":"Aman Nani","guess":3.2},{"off":0.1,"name":"Juhi","guess":3.2},{"off":0.1,"name":"Kannan P.","guess":3.2},{"off":0.1,"name":"Prakhar P.","guess":3.4}],"dateN":46,"weightN":82};
+const LOOKUP = [{"n":"Payal B.","g":"b","d":"2026-09-25","w":3.5},{"n":"Mayuri","g":"g","d":"2026-09-21","w":2.0},{"n":"Akshay G.","g":"g","d":"2026-09-21","w":2.8},{"n":"Aman Nani","g":"b","d":"2026-09-25","w":3.2},{"n":"Arti B.","g":"b","d":"2026-09-22","w":2.7},{"n":"Chirag B.","g":"b","d":"2026-09-13","w":3.1},{"n":"Rajeev B.","g":"b","d":"2026-09-22","w":3.2},{"n":"Aman Dadi","g":"b","d":"2026-09-25","w":4.0},{"n":"Preeti S.","g":"g","d":"2026-09-25","w":2.5},{"n":"Vanita","g":"g"},{"n":"Jagdeep","g":"b","w":2.7},{"n":"Manoj","g":"g"},{"n":"Mitali G.","g":"g","w":4.0},{"n":"Manoj B.","g":"g","d":"2026-09-13","w":2.6},{"n":"Sudha B.","g":"b","d":"2026-09-19","w":3.0},{"n":"Simran","g":"g","d":"2026-09-26","w":3.0},{"n":"Aditya B.","g":"b","d":"2026-09-18","w":0.6},{"n":"Jhanvi B.","g":"b","d":"2026-09-04","w":3.0},{"n":"Rajesh B.","g":"b","d":"2026-09-22","w":3.3},{"n":"Prachi","g":"g","w":2.7},{"n":"Navneet","g":"b","d":"2026-09-19","w":2.2},{"n":"Rakhi B.","g":"b","d":"2026-09-24","w":5.3},{"n":"Nikhil S.","g":"g","d":"2026-09-19","w":2.8},{"n":"Rahul B.","g":"b","d":"2026-09-19","w":2.9},{"n":"Manju B.","g":"b","d":"2026-09-22","w":3.5},{"n":"Ashish B.","g":"g","w":3.0},{"n":"Nisha G.","g":"b","d":"2026-09-21","w":3.0},{"n":"Mamta S.","g":"b","d":"2026-09-16","w":6.0},{"n":"Archit B.","g":"b","w":2.9},{"n":"Mahaveer K.","g":"b"},{"n":"Shubham","g":"g","w":2.5},{"n":"Ravijit","g":"b","w":3.0},{"n":"Prakhar P.","g":"g","d":"2026-09-04","w":3.4},{"n":"Sakshi J.","g":"g","w":2.1},{"n":"Aman","g":"g","w":3.0},{"n":"Ayush G.","g":"g"},{"n":"Mayank","g":"g","w":3.3},{"n":"Saamarth G.","g":"g","w":3.0},{"n":"Nandita","g":"g"},{"n":"Pm","g":"g","w":2.8},{"n":"Deblina G.","g":"g"},{"n":"Arianna T.","g":"b","w":4.0},{"n":"Abhas","g":"g","w":2.4},{"n":"Niyati U.","g":"g","w":3.3},{"n":"Ramendra R.","g":"g","d":"2026-09-24","w":3.0},{"n":"Avi","g":"g"},{"n":"Arpit S.","g":"g","w":4.1},{"n":"Ramendra","g":"g","d":"2026-09-24","w":3.0},{"n":"Punith","g":"g","w":2.9},{"n":"Kevin","g":"g","w":3.1},{"n":"Kannan P.","g":"g","w":3.2},{"n":"Anuj","g":"g","d":"2026-09-24","w":2.6},{"n":"Megha","g":"g"},{"n":"Kritika","g":"g","d":"2026-09-16","w":4.8},{"n":"Rajan D.","g":"g","w":3.2},{"n":"Ashish","g":"g","d":"2026-09-14","w":2.9},{"n":"Sapna C.","g":"b","w":3.2},{"n":"Abhinav T.","g":"g","w":3.2},{"n":"Swati","g":"b","w":3.3},{"n":"Abhishek","g":"b","w":2.5},{"n":"Gagan","g":"g","d":"2026-09-09","w":3.1},{"n":"Abhishek M.","g":"b","d":"2026-09-10","w":2.9},{"n":"Nipun","g":"g","w":3.5},{"n":"Arjav","g":"b","d":"2026-09-13","w":2.0},{"n":"Neha","g":"g","w":2.9},{"n":"Sanghamitra T.","g":"g","w":3.2},{"n":"Shreya C.","g":"g","w":5.0},{"n":"Parul","g":"g","d":"2026-09-20","w":3.1},{"n":"Yogesh","g":"g","d":"2026-09-25","w":3.1},{"n":"Ayushi G.","g":"g","d":"2026-09-17","w":3.0},{"n":"Simran","g":"b","w":3.0},{"n":"Tanushree J.","g":"g","w":3.1},{"n":"Juhi","g":"g","w":3.2},{"n":"Utkarsh N.","g":"g","w":2.8},{"n":"Sharon","g":"b","d":"2026-09-28","w":3.1},{"n":"Kavita","g":"b","d":"2026-09-03","w":4.0},{"n":"Atul M.","g":"b"},{"n":"Arushi N.","g":"b","w":2.6},{"n":"Mudit K.","g":"b","w":3.3},{"n":"Neha P.","g":"b","d":"2026-09-20","w":2.6},{"n":"Tweesha T.","g":"g","d":"2026-09-05","w":4.2},{"n":"Varun J.","g":"g","d":"2026-09-26","w":3.1},{"n":"Joe B.","g":"b","d":"2026-09-22","w":2.8},{"n":"Taylor G.","g":"g","d":"2026-09-15","w":3.5},{"n":"Kathleen L.","g":"g","d":"2026-09-27","w":3.1},{"n":"Charu K.","g":"g","d":"2026-09-28","w":2.9},{"n":"Mia S.","g":"g","d":"2026-09-18","w":3.8},{"n":"Payal","g":"g","w":2.3},{"n":"Aditya D.","g":"g","d":"2026-09-16","w":4.4},{"n":"Prateek B.","g":"g","w":3.2},{"n":"Robert","g":"b"},{"n":"Unnmalini B.","g":"g","d":"2026-09-22","w":3.5}];
+const WALL_SNAPSHOT = [{"n":"Chirag B.","r":"Family","t":"Hamare ghar ke is nanhe se angel ko dher saara pyaar aur blessings. Bhagwan isse hamesha healthy, happy aur blessed rakhe. Iski life khushiyon, pyaar, achhi health aur success se bhari rahe. Yeh hamesha muskurata rahe aur aap dono ka naam roshan kare. Can't wait to make lots of memories with my little nephew/niece.","b":0},{"n":"Manoj B.","r":"Family","t":"Congratulations to the entire family! Hamare parivaar ke is nanhe se angel ke aane par bahut bahut badhai. Bhagwan is nanhi si jaan ko hamesha healthy, happy aur blessed rakhe. Iski zindagi pyaar, khushiyon, achhi health aur success se bhari rahe. Yeh hamesha muskurata rahe aur apne mummy-papa","b":0},{"n":"Sudha B.","r":"Family","t":"हमारी नन्ही-सी जान को ढेर सारा प्यार और आशीर्वाद। ईश्वर तुम्हें हमेशा स्वस्थ, खुश और सुरक्षित रखें। तुम्हारा जीवन प्रेम, खुशियों, अच्छे संस्कारों, सफलता और समृद्धि से भरा रहे। तुम हमेशा मुस्कुराते रहो और अपने माता-पिता व पूरे परिवार का नाम रोशन करो। ढेर सारा स्नेह, प्यार और अनंत आशीर्वाद।","b":0},{"n":"Arti B.","r":"Family","t":"Bhagwan is nanhe se baby ko hamesha healthy, happy aur blessed rakhe. Uski zindagi pyaar, khushiyon, achhi health aur success se bhari rahe. Woh hamesha muskurata rahe aur apne parents aur family ka naam roshan kare.","b":0},{"n":"Preeti S.","r":"Family","t":"I wish you a lifetime of love, adventure and beautiful memories. I promise to be the fun Massi you can always count on- for chocolates, secrets, hugs and unconditional love.","b":0},{"n":"Yogesh","r":"Friend","t":"God bless you bachcha. For the parents - make sure to support each other moving forward, journey is tough but can be happily navigated with the partner's support.","b":0},{"n":"Charu K.","r":"Friend","t":"Wishing the little one a lifetime filled with love, laughter and endless happiness!! Congratulations to both of you, be ready for beautiful sleepless nights!!","b":0},{"n":"Abhishek M.","r":"Friend","t":"God has already blessed this baby with such amazing parents, grand parents, bua, mama and me ofcourse (;)). I wish health and happiness for this baby.","b":0},{"n":"Ashish B.","r":"Family","t":"Wishing your little one a lifetime of love, laughter, good health, and beautiful adventures. May every day be filled with joy and endless smiles!","b":0},{"n":"Tweesha T.","r":"Friend","t":"CONGRATULATIONSSSS AMAN AND VANDANA!!! wishing the absolute best for Baby AV!! and a super easy and healthy birth and recovery for Vandana!!! <3","b":0},{"n":"Punith","r":"Friend","t":"Wishing you a lifetime of love, laughter, good health, and endless happiness. May you always be surrounded by kindness and never stop dreaming.","b":0},{"n":"Akshay G.","r":"Family","t":"May the beautiful princess of Vandana bhabhi and Aman bhaiya grow up to bring immense pride, wisdom, and joy to our entire family. -- Phupa","b":0},{"n":"Abhas","r":"Friend","t":"Such a wonderful surprise. So happy to know this. May the baby is blessed with good health and bright future (just like the parents) :)","b":0},{"n":"Shreya C.","r":"Friend","t":"May the baby holds the entire family with the eternal bond of love and affection. Wish baby and mommie good health. God bless you","b":0},{"n":"Kevin","r":"Friend","t":"Congrats Aman and Vandana. Your most ambitious and long-term project yet. Remember to take care of each other and yourselves!","b":0},{"n":"Sharon","r":"Friend","t":"All the best for the new phase of life, you both will make a great parent. Just go with the flow, Dont try to master anything","b":0},{"n":"Nipun","r":"Friend","t":"May you enter this world bringing in lot of happiness to your Mumma and Papa. May God Bless you with the best in life.","b":0},{"n":"Mayank","r":"Friend","t":"May your life be as beautiful and precious as your smile and may you achieve everything your heart desires","b":0},{"n":"Niyati U.","r":"Friend","t":"Wishing the baby and parents to be all the love, luck, happiness, and joys that life has to offer","b":0},{"n":"Sapna C.","r":"Friend","t":"Wishing you a lifetime of love, blessings, and magical moments. See you soon, little sunshine!","b":0},{"n":"Saamarth G.","r":"Friend","t":"May you grow up to be as smart, passionate and ambitious as your parents (or even smarter :p)","b":0},{"n":"Kathleen L.","r":"Friend","t":"May your lives be enriched endlessly with your little one's arrival! Congratulations!","b":0},{"n":"Payal","r":"Friend","t":"Welcome little one Wishing you a lifetime of love, joy, and beautiful beginnings.","b":0},{"n":"Rakhi B.","r":"Family","t":"Vandana pls take good care of yourself and have a wonderful and charming baby..","b":0},{"n":"Tanushree J.","r":"Friend","t":"May the baby be blessed with best of health, sunshine and abundant joy :)","b":0},{"n":"Jhanvi B.","r":"Family","t":"I wish you to get the whole world and every happiness there is to offer","b":0},{"n":"Mia S.","r":"Friend","t":"Congratulations to you both! Looking forward to seeing pictures :)","b":0},{"n":"Neha","r":"Friend","t":"May god bless you with loads of good health, wealth and happiness","b":0},{"n":"Sanghamitra T.","r":"Friend","t":"Wishing you a lifetime of joy, love, and God’s abundant grace.","b":0},{"n":"Taylor G.","r":"Friend","t":"Super congrats Aman, wishing the best for you and your wife :)","b":0},{"n":"Arjav","r":"Friend","t":"Welcome to the techie and consulting parents, little champ!","b":0},{"n":"Simran","r":"Friend","t":"God bless you champ come fast we are waiting to meet you","b":0},{"n":"Joe B.","r":"Friend","t":"Wishing you the intelligence and charm of your parents!","b":0},{"n":"Mayuri","r":"Family","t":"Bua is best and she is gonna love you soooo muchhhhhh","b":0},{"n":"Rajesh B.","r":"Family","t":"Take care of vandana before and after the delivery...","b":0},{"n":"Simran","r":"Family","t":"Eternal good health, happiness and campus placement","b":0},{"n":"Swati","r":"Friend","t":"Always be blessed with love and happiness forever!!","b":0},{"n":"Aman","r":"Friend","t":"Be baby and mother be happy and healthy eternally","b":0},{"n":"Kannan P.","r":"Friend","t":"Happy and healthy life, lots of fun on the way!","b":0},{"n":"Neha P.","r":"Friend","t":"Praise ur baby nd give lots of loving attention","b":0},{"n":"Aditya D.","r":"Friend","t":"Welcome to the world! You have got OG parents!","b":0},{"n":"Unnmalini B.","r":"Friend","t":"Happy & healthy unaware of the word \"Synergy\"","b":0},{"n":"Prateek B.","r":"Friend","t":"Have a healthy, long and prosperous life","b":0},{"n":"Shubham","r":"Friend","t":"May god less the child with good health","b":0},{"n":"Utkarsh N.","r":"Friend","t":"She will be a blessing and a wonder kid","b":0},{"n":"Anuj","r":"Friend","t":"Lot of exploring and experimenting fun","b":0},{"n":"Jagdeep","r":"Friend","t":"God bless you kiddo! So so so much!","b":0},{"n":"Aman Dadi","r":"Family","t":"Always be happy healthy & Lucky","b":0},{"n":"Rajeev B.","r":"Family","t":"Live long like Rajkumar / king","b":0},{"n":"Rahul B.","r":"Family","t":"To have a great life ahead.","b":0},{"n":"Payal B.","r":"Family","t":"Sharp mind good looking","b":0},{"n":"Aman Nani","r":"Family","t":"Handsome and smart look","b":0},{"n":"Varun J.","r":"Friend","t":"Have best of the health","b":0},{"n":"Kritika","r":"Friend","t":"Eyes full fo dreams","b":0},{"n":"Juhi","r":"Friend","t":"Wish a healthy life","b":0},{"n":"Mitali G.","r":"Family","t":"You will be a star","b":0},{"n":"Ramendra R.","r":"Friend","t":"Hey Future Advika","b":0},{"n":"Navneet","r":"Family","t":"Lot of blessings","b":0},{"n":"Manju B.","r":"Family","t":"Healthy and cute","b":0},{"n":"Aditya B.","r":"Family","t":"Always be happy","b":0},{"n":"Arushi N.","r":"Friend","t":"Luckiest Baby!!","b":0},{"n":"Archit B.","r":"Family","t":"Learn music","b":0},{"n":"Arpit S.","r":"Friend","t":"Fearless","b":0}];
 
 const $ = id => document.getElementById(id);
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let muted = false, audioCtx = null;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+                set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
 
 /* ======================= SOUND ======================= */
+let muted = false, audioCtx = null;
 function ac() {
-  const A = window.AudioContext || window.webkitAudioContext;
-  if (!A) return null;
+  const A = window.AudioContext || window.webkitAudioContext; if (!A) return null;
   if (!audioCtx) audioCtx = new A();
   if (audioCtx.state === "suspended") audioCtx.resume();
   return audioCtx;
@@ -418,17 +609,18 @@ function tone(f, d, type, vol, delay) {
   } catch (e) {}
 }
 const thump = () => { tone(150, .18, "triangle", .5); tone(90, .24, "sine", .5); };
-const pop = () => { tone(620, .07, "square", .1); tone(900, .06, "square", .07, .04); };
+const pop = () => { tone(620, .07, "square", .09); tone(900, .06, "square", .06, .04); };
+const chime = () => [880, 1109, 1319, 1760].forEach((f, i) => tone(f, .9, "sine", .12, i * .12));
 function boomSound() {
   if (muted) return;
   try {
     const c = ac(); if (!c) return;
     const b = c.createBuffer(1, c.sampleRate * .6, c.sampleRate), d = b.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.4);
-    const s = c.createBufferSource(), g = c.createGain(); s.buffer = b; g.gain.value = .55;
+    const s = c.createBufferSource(), g = c.createGain(); s.buffer = b; g.gain.value = .5;
     s.connect(g); g.connect(c.destination); s.start();
   } catch (e) {}
-  [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .6, "triangle", .2, .15 + i * .09));
+  [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .6, "triangle", .18, .15 + i * .09));
 }
 $("muteBtn").onclick = () => { muted = !muted; $("muteBtn").textContent = muted ? "🔇" : "🔊"; };
 
@@ -437,22 +629,18 @@ const sky = $("sky"), sctx = sky.getContext("2d");
 let stars = [], skyOn = true;
 function sizeSky() {
   const dpr = Math.min(2, devicePixelRatio || 1);
-  sky.width = innerWidth * dpr; sky.height = innerHeight * dpr;
-  sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  sky.width = innerWidth * dpr; sky.height = innerHeight * dpr; sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   stars = Array.from({ length: Math.round(innerWidth * innerHeight / 5200) }, () => ({
-    x: Math.random() * innerWidth, y: Math.random() * innerHeight,
-    r: Math.random() * 1.6 + .3, p: Math.random() * 6.28, s: Math.random() * 1.4 + .4 }));
+    x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.6 + .3, p: Math.random() * 6.28, s: Math.random() * 1.4 + .4 }));
 }
 function drawSky(t) {
   if (!skyOn) return;
   sctx.clearRect(0, 0, innerWidth, innerHeight);
   for (const s of stars) {
-    const a = .35 + .65 * Math.abs(Math.sin(t / 1000 * s.s + s.p));
-    sctx.globalAlpha = a; sctx.fillStyle = "#FFF4E0";
-    sctx.beginPath(); sctx.arc(s.x, s.y, s.r, 0, 6.283); sctx.fill();
+    sctx.globalAlpha = .35 + .65 * Math.abs(Math.sin(t / 1000 * s.s + s.p));
+    sctx.fillStyle = "#FFF4E0"; sctx.beginPath(); sctx.arc(s.x, s.y, s.r, 0, 6.283); sctx.fill();
   }
-  sctx.globalAlpha = 1;
-  requestAnimationFrame(drawSky);
+  sctx.globalAlpha = 1; requestAnimationFrame(drawSky);
 }
 sizeSky(); addEventListener("resize", sizeSky); requestAnimationFrame(drawSky);
 
@@ -461,23 +649,24 @@ const cv = $("confetti"), cx = cv.getContext("2d");
 let parts = [], confRun = false;
 function sizeConf() { cv.width = innerWidth; cv.height = innerHeight; }
 sizeConf(); addEventListener("resize", sizeConf);
-function burst(n, pinkOnly) {
-  const cols = pinkOnly ? ["#F2A0BA", "#E7A2B8", "#FFD6E2", "#F5E6BD", "#fff", "#C4738C"]
-                        : ["#F2A0BA", "#F5E6BD", "#CDBCE4", "#C7DDEE", "#BFD9C6", "#fff"];
+const PINK = ["#F2A0BA", "#E7A2B8", "#FFD6E2", "#F5E6BD", "#fff", "#C4738C"];
+const GOLD = ["#F5E6BD", "#E9C77A", "#FFF3CC", "#F2B8C9", "#fff"];
+function burst(n, cols, ox, oy, spread) {
+  cols = cols || PINK;
   for (let i = 0; i < n; i++) {
-    const a = -Math.PI / 2 + (Math.random() - .5) * 2.2, sp = 6 + Math.random() * 14;
-    parts.push({ x: innerWidth / 2 + (Math.random() - .5) * 120, y: innerHeight * .55,
+    const a = -Math.PI / 2 + (Math.random() - .5) * (spread || 2.2), sp = 5 + Math.random() * 13;
+    parts.push({ x: (ox ?? innerWidth / 2) + (Math.random() - .5) * 60, y: oy ?? innerHeight * .55,
       vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, w: 6 + Math.random() * 8, h: 9 + Math.random() * 8,
       r: Math.random() * 6, vr: (Math.random() - .5) * .3, c: cols[i % cols.length], k: i % 3 });
   }
   if (!confRun) { confRun = true; requestAnimationFrame(stepConf); }
 }
-function heartAt(x, y, s) {
-  cx.beginPath(); cx.moveTo(x, y + s * .3);
-  cx.bezierCurveTo(x, y, x - s * .5, y, x - s * .5, y + s * .3);
-  cx.bezierCurveTo(x - s * .5, y + s * .6, x, y + s * .8, x, y + s);
-  cx.bezierCurveTo(x, y + s * .8, x + s * .5, y + s * .6, x + s * .5, y + s * .3);
-  cx.bezierCurveTo(x + s * .5, y, x, y, x, y + s * .3); cx.fill();
+function heartAt(ctx, x, y, s) {
+  ctx.beginPath(); ctx.moveTo(x, y + s * .3);
+  ctx.bezierCurveTo(x, y, x - s * .5, y, x - s * .5, y + s * .3);
+  ctx.bezierCurveTo(x - s * .5, y + s * .6, x, y + s * .8, x, y + s);
+  ctx.bezierCurveTo(x, y + s * .8, x + s * .5, y + s * .6, x + s * .5, y + s * .3);
+  ctx.bezierCurveTo(x + s * .5, y, x, y, x, y + s * .3); ctx.fill();
 }
 function stepConf() {
   cx.clearRect(0, 0, cv.width, cv.height);
@@ -487,289 +676,390 @@ function stepConf() {
     cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c;
     if (p.k === 0) cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
     else if (p.k === 1) { cx.beginPath(); cx.arc(0, 0, p.w / 2, 0, 6.283); cx.fill(); }
-    else heartAt(0, -p.w / 2, p.w + 2);
+    else heartAt(cx, 0, -p.w / 2, p.w + 2);
     cx.restore();
   }
-  if (parts.length) requestAnimationFrame(stepConf);
-  else { confRun = false; cx.clearRect(0, 0, cv.width, cv.height); }
+  if (parts.length) requestAnimationFrame(stepConf); else { confRun = false; cx.clearRect(0, 0, cv.width, cv.height); }
 }
-
+const balloonSVG = c => `<svg viewBox="0 0 60 150"><path d="M30 94 C 26 112 36 128 30 150" stroke="${c}" stroke-width="1.5" fill="none"/><ellipse cx="30" cy="40" rx="25" ry="31" fill="${c}"/><path d="M26 70 L34 70 L30 77 Z" fill="${c}"/><ellipse cx="21" cy="29" rx="6" ry="10" fill="#fff" opacity=".5"/></svg>`;
 function releaseBalloons(n) {
-  const layer = $("balloons"), cols = ["#E7A2B8", "#F2D797", "#F2A0BA", "#CDBCE4", "#FFD6E2", "#C7DDEE"];
+  const cols = ["#E7A2B8", "#F2D797", "#F2A0BA", "#CDBCE4", "#FFD6E2", "#C7DDEE"];
   for (let i = 0; i < n; i++) {
-    const c = cols[i % cols.length], el = document.createElement("div");
-    el.className = "bln";
-    el.style.left = (4 + Math.random() * 88) + "vw";
-    el.style.width = (46 + Math.random() * 34) + "px";
-    el.style.animationDuration = (5 + Math.random() * 3.5) + "s";
-    el.style.animationDelay = (Math.random() * 1.1) + "s";
-    el.innerHTML = `<svg viewBox="0 0 60 150"><path d="M30 94 C 26 112 36 128 30 150" stroke="${c}" stroke-width="1.5" fill="none"/><ellipse cx="30" cy="40" rx="25" ry="31" fill="${c}"/><path d="M26 70 L34 70 L30 77 Z" fill="${c}"/><ellipse cx="21" cy="29" rx="6" ry="10" fill="#fff" opacity=".5"/></svg>`;
-    layer.appendChild(el);
+    const el = document.createElement("div"); el.className = "bln";
+    el.style.left = (4 + Math.random() * 88) + "vw"; el.style.width = (46 + Math.random() * 34) + "px";
+    el.style.animationDuration = (5 + Math.random() * 3.5) + "s"; el.style.animationDelay = (Math.random() * 1.1) + "s";
+    el.innerHTML = balloonSVG(cols[i % cols.length]); $("balloons").appendChild(el);
     setTimeout(() => el.remove(), 10500);
   }
 }
 
 /* ======================= REVEAL FLOW ======================= */
-function hideSkyDecor(hide) {
-  ["moon", "cl1", "cl2", "sky"].forEach(id => $(id).style.display = hide ? "none" : "");
-  $("nightBg").classList.toggle("gone", hide);
+const OVERLAYS = ["ovIntro", "ovCount", "ovBoom", "ovName"];
+function show(id) { OVERLAYS.forEach(o => $(o).classList.toggle("gone", o !== id)); }
+function setNight(on) {
+  ["moon", "cl1", "cl2", "sky"].forEach(id => $(id).style.display = on ? "" : "none");
+  $("nightBg").classList.toggle("gone", !on);
+  if (on && !skyOn) { skyOn = true; requestAnimationFrame(drawSky); }
+  if (!on) skyOn = false;
 }
-function showMain(animated) {
-  ["ovIntro", "ovCount", "ovBoom"].forEach(id => $(id).classList.add("gone"));
-  $("nightBg").classList.add("gone");
-  $("rays").classList.remove("on");
-  setTimeout(() => { hideSkyDecor(true); skyOn = false; }, animated ? 900 : 0);
-  document.body.classList.remove("locked");
-  $("main").hidden = false;
-  $("muteBtn").style.display = "none";
-  try { localStorage.setItem("avArrivalSeen", "1"); } catch (e) {}
-  revealCards();
-}
-
-function startReveal() {
-  ac();
-  if (reduced) { burst(80, true); showMain(false); return; }
-  $("ovIntro").classList.add("gone");
-  $("ovCount").classList.remove("gone");
-  const caps = { 3: "Drumroll please… 🥁", 2: "Are you ready? 🤍", 1: "Here she… wait… 🙈" };
-  let n = 3;
-  const render = () => {
-    const el = $("countNum"); el.textContent = n; el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit");
-    $("countCap").textContent = caps[n]; thump();
-  };
-  render();
-  const iv = setInterval(() => {
-    n--;
-    if (n < 1) { clearInterval(iv); boom(); return; }
-    render();
-  }, 1000);
-}
-
-function boom() {
-  $("ovCount").classList.add("gone");
-  $("ovBoom").classList.remove("gone");
-  $("flash").classList.remove("go"); void $("flash").offsetWidth; $("flash").classList.add("go");
-  $("rays").classList.add("on");
-  boomSound();
-  burst(260, true);
-  releaseBalloons(14);
-  $("revealEmoji").classList.add("pop");
-  document.querySelectorAll("#girlWords span").forEach((w, i) =>
-    setTimeout(() => { w.classList.add("slam"); pop(); }, 500 + i * 360));
-  setTimeout(() => $("revealSub").classList.add("on"), 1700);
-  setTimeout(() => burst(140, true), 1900);
-  setTimeout(() => showMain(true), 4600);
-}
-
-$("meetBtn").onclick = startReveal;
-$("replayBtn").onclick = () => {
-  window.scrollTo({ top: 0 });
+function resetReveal() {
   document.querySelectorAll("#girlWords span").forEach(w => w.classList.remove("slam"));
-  $("revealEmoji").classList.remove("pop"); $("revealSub").classList.remove("on");
-  hideSkyDecor(false); skyOn = true; requestAnimationFrame(drawSky);
-  document.body.classList.add("locked"); $("main").hidden = true;
-  $("muteBtn").style.display = "";
-  startReveal();
+  $("revealEmoji").classList.remove("pop");
+  ["andName", "fullName", "nameDate", "revealActions"].forEach(id => $(id).classList.remove("on"));
+  document.querySelectorAll("#meanings span, #meanings i").forEach(m => m.classList.remove("on"));
+  Object.assign($("nameClip").style, { transition: "none", width: "0px", overflow: "hidden" }); $("nameWrap").style.width = ""; $("dots").style.visibility = "";
+  $("rays").classList.remove("on", "gold");
+}
+function startReveal() {
+  ac(); resetReveal();
+  if (reduced) { enterWorld(); return; }
+  show("ovCount");
+  const caps = { 3: "Drumroll please… 🥁", 2: "Are you ready? 🤍", 1: "Here she comes… 🙈" };
+  let n = 3;
+  const render = () => { const el = $("countNum"); el.textContent = n; el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit"); $("countCap").textContent = caps[n]; thump(); };
+  render();
+  const iv = setInterval(() => { n--; if (n < 1) { clearInterval(iv); girlBoom(); return; } render(); }, 1000);
+}
+function girlBoom() {
+  show("ovBoom");
+  const f = $("flash"); f.classList.remove("go"); void f.offsetWidth; f.classList.add("go");
+  $("rays").classList.add("on"); boomSound(); burst(240); releaseBalloons(12);
+  $("revealEmoji").classList.add("pop");
+  document.querySelectorAll("#girlWords span").forEach((w, i) => setTimeout(() => { w.classList.add("slam"); pop(); }, 500 + i * 360));
+  setTimeout(() => burst(120), 1800);
+  setTimeout(nameReveal, 3900);
+}
+function nameReveal() {
+  show("ovName"); $("rays").classList.add("gold");
+  setTimeout(() => $("andName").classList.add("on"), 200);
+  [0, 1, 2].forEach(i => setTimeout(() => tone(330 + i * 55, .25, "sine", .12), 700 + i * 420));
+  setTimeout(async () => {
+    $("dots").style.visibility = "hidden";
+    // measure only once the script font is in, or a slow connection would cut the name short
+    try { await Promise.race([document.fonts.load('150px "Great Vibes"'), new Promise(r => setTimeout(r, 1500))]); } catch (e) {}
+    const w = $("nameScript").scrollWidth, clip = $("nameClip");
+    $("nameWrap").style.width = w + "px";           // reserve the space so it writes left→right, centred
+    void clip.offsetWidth;
+    clip.style.transition = "width 2.4s cubic-bezier(.45,.05,.3,1)"; clip.style.width = w + "px";
+    const release = () => { clip.style.transition = "none"; clip.style.width = "auto"; clip.style.overflow = "visible"; $("nameWrap").style.width = "auto"; };
+    clip.addEventListener("transitionend", release, { once: true });
+    setTimeout(release, 2700);                       // in case transitionend never fires
+    chime();
+    const r = $("nameWrap").getBoundingClientRect();
+    for (let k = 0; k < 8; k++) setTimeout(() => burst(10, GOLD, r.left + r.width * (k / 7), r.top + r.height * .55, 6.2), k * 280);
+  }, 2100);
+  setTimeout(() => { $("fullName").classList.add("on"); burst(160, GOLD); }, 4500);
+  // the three meanings arrive one by one
+  const bits = [...document.querySelectorAll("#meanings span, #meanings i")];
+  bits.forEach((m, i) => setTimeout(() => { m.classList.add("on"); if (m.tagName === "SPAN") tone(1047 + i * 90, .5, "sine", .08); }, 5300 + i * 380));
+  setTimeout(() => $("nameDate").classList.add("on"), 5300 + bits.length * 380);
+  setTimeout(() => $("revealActions").classList.add("on"), 5900 + bits.length * 380);
+}
+function enterWorld() {
+  OVERLAYS.forEach(o => $(o).classList.add("gone"));
+  $("rays").classList.remove("on"); setNight(false);
+  document.body.classList.remove("locked"); $("main").hidden = false; $("muteBtn").style.display = "none";
+  store.set("ivikaSeen", "1"); startPage();
+}
+$("meetBtn").onclick = startReveal;
+$("enterBtn").onclick = () => { pop(); enterWorld(); };
+$("blessFirstBtn").onclick = () => {
+  pop(); enterWorld();
+  setTimeout(() => { $("blessNow").scrollIntoView({ behavior: "smooth", block: "start" }); setTimeout(() => $("bName").focus({ preventScroll: true }), 700); }, 250);
+};
+$("replayBtn").onclick = () => {
+  scrollTo({ top: 0 }); document.body.classList.add("locked"); $("main").hidden = true;
+  $("muteBtn").style.display = ""; setNight(true); show("ovIntro"); startReveal();
 };
 
-/* ======================= MAIN PAGE ======================= */
-function revealCards() {
-  const cards = document.querySelectorAll(".card");
-  const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); if (e.target.id === "resultsCard") animateSplit(); }
-  }), { threshold: .12 }) : null;
-  cards.forEach((c, i) => { if (io) io.observe(c); else c.classList.add("in"); });
-  setTimeout(() => $("hero").classList.add("in"), 60);
+/* ======================= PAGE ======================= */
+let pageStarted = false;
+function startPage() {
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("in"); io.unobserve(e.target);
+    if (e.target.id === "resultsCard") setTimeout(() => $("splitG").style.width = $("splitG").dataset.w + "%", 200);
+    if (e.target.id === "journeyCard") fillTimeline();
+    if (e.target.id === "hero") countKg();
+  }), { threshold: .1 });
+  document.querySelectorAll(".card").forEach(c => io.observe(c));
+  if (pageStarted) return;
+  pageStarted = true;
+  const nav = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) document.querySelectorAll("nav.pills a").forEach(a => a.classList.toggle("on", a.dataset.s === e.target.id));
+  }), { rootMargin: "-45% 0px -50% 0px" });
+  document.querySelectorAll(".card").forEach(c => nav.observe(c));
 }
 
-/* bunting + bokeh */
+/* decor */
 (function () {
   const cols = ["#F2B8C9", "#F5E6BD", "#CDBCE4", "#C7DDEE", "#BFD9C6", "#F3C9AE", "#E7A2B8"];
-  $("bunting").innerHTML = Array.from({ length: 11 }, (_, i) =>
-    `<b style="background:${cols[i % cols.length]};animation-delay:${-i * .25}s"></b>`).join("");
-  const bk = $("bokeh"), bcol = ["#F7C9D6", "#F5E6BD", "#E2D6F0", "#D6E6F2"];
-  bk.innerHTML = Array.from({ length: 12 }, (_, i) => {
-    const s = 40 + Math.random() * 120;
-    return `<i style="width:${s}px;height:${s}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;background:${bcol[i % 4]};animation-duration:${6 + Math.random() * 8}s;animation-delay:${-Math.random() * 6}s"></i>`;
-  }).join("");
+  $("bunting").innerHTML = Array.from({ length: 11 }, (_, i) => `<b style="background:${cols[i % 7]};animation-delay:${-i * .25}s"></b>`).join("");
+  const bcol = ["#F7C9D6", "#F5E6BD", "#E2D6F0", "#D6E6F2"];
+  $("bokeh").innerHTML = Array.from({ length: 11 }, (_, i) => { const s = 40 + Math.random() * 120;
+    return `<i style="width:${s}px;height:${s}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;background:${bcol[i % 4]};animation-duration:${6 + Math.random() * 8}s;animation-delay:${-Math.random() * 6}s"></i>`; }).join("");
 })();
 
-/* age ticker */
-function ageText() {
-  const ms = Date.now() - BIRTH.getTime();
-  if (ms < 0) return "🌙 Arriving very soon";
-  const h = Math.floor(ms / 3600000), d = Math.floor(ms / 86400000);
-  if (h < 24) return `🌙 ${h} hour${h === 1 ? "" : "s"} old`;
-  if (d < 14) return `🌙 ${d} day${d === 1 ? "" : "s"} old today`;
-  if (d < 60) return `🌙 ${Math.floor(d / 7)} weeks old`;
-  const m = Math.floor(d / 30.44);
-  return m < 24 ? `🌙 ${m} month${m === 1 ? "" : "s"} old` : `🌙 ${Math.floor(m / 12)} years old`;
-}
-function tickAge() { $("age").textContent = ageText(); }
-tickAge(); setInterval(tickAge, 60000);
-
-/* results */
-function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
-(function renderResults() {
-  const R = RESULTS, pct = Math.round(100 * R.girls / R.voted);
-  $("genderLine").innerHTML = `<b style="color:var(--rose-deep)">${R.girls} of the ${R.voted}</b> people who voted said girl — Team Pink wins! 💗`;
-  $("legG").textContent = `💗 Girl · ${R.girls}`;
-  $("legB").textContent = `Boy · ${R.boys} 💙`;
-  $("splitG").dataset.w = pct; $("splitG").textContent = pct + "%";
-  $("splitB").textContent = (100 - pct) + "%";
-  $("pinkToggle").textContent = `See Team Pink (${R.teamPink.length}) ▾`;
-  $("pinkList").innerHTML = R.teamPink.map(n => `<span class="chip">${esc(n)}</span>`).join("");
-  $("pinkToggle").onclick = () => {
-    const open = $("pinkList").hidden;
-    $("pinkList").hidden = !open;
-    $("pinkToggle").textContent = `${open ? "Hide" : "See"} Team Pink (${R.teamPink.length}) ${open ? "▴" : "▾"}`;
+/* poppable balloons in the hero */
+const HERO_BALLOONS = [{ c: "#E7A2B8", x: "3%", y: "70px" }, { c: "#F2D797", x: "86%", y: "54px" }, { c: "#CDBCE4", x: "88%", y: "735px" }, { c: "#FFD6E2", x: "2%", y: "760px" }];
+function spawnBalloon(i) {
+  const b = HERO_BALLOONS[i], el = document.createElement("button");
+  el.type = "button"; el.className = "pop-balloon"; el.setAttribute("aria-label", "Pop the balloon");
+  el.style.left = b.x; el.style.top = b.y; el.style.animationDelay = (-i * 1.3) + "s";
+  el.innerHTML = balloonSVG(b.c);
+  el.onclick = () => {
+    const r = el.getBoundingClientRect(); el.classList.add("popped"); pop(); tone(1400, .08, "square", .05, .03);
+    burst(38, [b.c, "#fff", "#F5E6BD"], r.left + r.width / 2, r.top + r.height * .3, 6.2);
+    setTimeout(() => { el.remove(); spawnBalloon(i); }, 3500);
   };
+  $("hero").appendChild(el);
+}
+HERO_BALLOONS.forEach((_, i) => spawnBalloon(i));
 
-  const ww = R.weightWinners, exact = ww.length && ww[0].off === 0;
-  $("weightLine").innerHTML = exact
-    ? `Out of ${R.weightN} guesses, <b style="color:var(--rose-deep)">${ww.length} ${ww.length === 1 ? "person" : "people"} nailed it exactly</b> 🎯`
-    : `Closest of ${R.weightN} guesses — just ${ww[0].off} kg away:`;
-  $("weightWin").innerHTML = ww.map(w => `<span class="chip win">${esc(w.name)}</span>`).join("");
-  if (R.weightRunners.length)
-    $("weightRun").innerHTML = `<b>So close (±${R.weightRunners[0].off} kg):</b> ` + R.weightRunners.map(w => esc(w.name)).join(", ");
+/* sparkles wherever you tap the hero */
+$("hero").addEventListener("pointerdown", e => {
+  if (e.target.closest("button")) return;
+  const r = $("hero").getBoundingClientRect(), glyphs = ["✨", "💗", "⭐", "🤍"];
+  for (let i = 0; i < 6; i++) {
+    const s = document.createElement("span"); s.className = "spark"; s.textContent = glyphs[i % 4];
+    s.style.left = (e.clientX - r.left - 8) + "px"; s.style.top = (e.clientY - r.top - 8) + "px";
+    const a = Math.random() * 6.283, d = 30 + Math.random() * 40;
+    s.style.setProperty("--dx", Math.cos(a) * d + "px"); s.style.setProperty("--dy", Math.sin(a) * d + "px");
+    $("hero").appendChild(s); setTimeout(() => s.remove(), 850);
+  }
+});
 
-  const dw = R.dateWinners, d0 = dw.length ? dw[0].off : 0;
-  $("dateLine").innerHTML = d0 === 0
-    ? `${dw.length === 1 ? "One person" : dw.length + " people"} guessed <b>12 September</b> exactly! Crowned our official Baby Oracle${dw.length === 1 ? "" : "s"}:`
-    : `Nobody guessed 12 September exactly — but ${dw.length === 1 ? "this guess was" : "these " + dw.length + " were"} just <b style="color:var(--rose-deep)">${d0} day${d0 === 1 ? "" : "s"} away</b>. Our official Baby Oracle${dw.length === 1 ? "" : "s"}:`;
-  $("dateWin").innerHTML = dw.map(w => `<span class="chip win">${esc(w.name)}<small>${esc(w.guess)}</small></span>`).join("");
-  if (R.dateRunners.length)
-    $("dateRun").innerHTML = `<b>Honourable mentions:</b> ` + R.dateRunners.map(w => `${esc(w.name)} (${esc(w.guess)})`).join(", ");
-})();
-function animateSplit() { const g = $("splitG"); setTimeout(() => g.style.width = g.dataset.w + "%", 150); }
+function countKg() {
+  const el = $("kg"), t0 = performance.now();
+  const step = t => { const p = Math.min(1, (t - t0) / 1400); el.textContent = (3.3 * (1 - Math.pow(1 - p, 3))).toFixed(1); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
 
-/* gallery */
+/* ticker */
+function tick() {
+  let s = Math.max(0, Math.floor((Date.now() - BIRTH.getTime()) / 1000));
+  const d = Math.floor(s / 86400); s -= d * 86400;
+  const h = Math.floor(s / 3600); s -= h * 3600;
+  const m = Math.floor(s / 60); s -= m * 60;
+  $("tD").textContent = d; $("tH").textContent = String(h).padStart(2, "0");
+  $("tM").textContent = String(m).padStart(2, "0"); $("tS").textContent = String(s).padStart(2, "0");
+}
+tick(); setInterval(tick, 1000);
+
+/* ---------- send love: a shared counter, but only once the v6 script answers ?love=1.
+   The older v5 script would store love taps as blank prediction rows. ---------- */
+let loveLive = false, loveTotal = 0, lovePending = 0, loveTimer = null;
+let myLove = Number(store.get("ivikaLove") || 0);
+function paintLove() {
+  $("loveCount").textContent = loveLive
+    ? `💗 ${loveTotal.toLocaleString("en-IN")} hugs sent to Ivika`
+    : (myLove ? `💗 You've sent ${myLove} hug${myLove === 1 ? "" : "s"}` : "Tap as many times as you like");
+}
+paintLove();
+fetch(SCRIPT_URL + "?love=1").then(r => r.json()).then(j => {
+  if (j && j.ok && typeof j.love === "number") { loveLive = true; loveTotal = j.love; paintLove(); }
+}).catch(() => {});
+$("loveBtn").onclick = e => {
+  const r = e.currentTarget.getBoundingClientRect();
+  for (let i = 0; i < 3; i++) {
+    const h = document.createElement("span"); h.className = "float-heart"; h.textContent = ["💗", "💕", "🤍"][i];
+    h.style.left = (r.left + r.width / 2 - 13 + (Math.random() - .5) * 60) + "px"; h.style.top = (r.top - 6) + "px";
+    h.style.setProperty("--dx", (Math.random() - .5) * 120 + "px"); h.style.setProperty("--rot", (Math.random() - .5) * 40 + "deg");
+    h.style.animationDelay = i * .08 + "s"; document.body.appendChild(h); setTimeout(() => h.remove(), 1900);
+  }
+  tone(700 + Math.random() * 200, .12, "sine", .1);
+  myLove++; store.set("ivikaLove", myLove);
+  if (!loveLive) { paintLove(); return; }
+  loveTotal++; lovePending++; paintLove();
+  clearTimeout(loveTimer);
+  loveTimer = setTimeout(() => {   // batch a flurry of taps into one request
+    const n = lovePending; lovePending = 0;
+    fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ kind: "love", count: n }) }).catch(() => {});
+  }, 1200);
+};
+
+/* share */
+$("shareBtn").onclick = async () => {
+  const text = "It's a girl! 🎀 Meet Ivika Sharma Bhatnagar, born 12 September 2026 at 3:50 AM, 3.3 kg. See her page:";
+  if (navigator.share) { try { await navigator.share({ title: "Meet Ivika 🎀", text, url: PAGE_URL }); return; } catch (e) { if (e.name === "AbortError") return; } }
+  window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + PAGE_URL), "_blank");
+};
+
+/* ======================= PHOTOS ======================= */
 let photos = [], lbIdx = 0;
-fetch("photos/manifest.json", { cache: "no-store" })
-  .then(r => r.ok ? r.json() : { photos: [] })
-  .catch(() => ({ photos: [] }))
-  .then(m => {
-    photos = (m && m.photos) || [];
-    if (!photos.length) { $("soon").hidden = false; $("photosLede").hidden = true; return; }
-    $("gallery").innerHTML = photos.map((p, i) =>
-      `<button type="button" data-i="${i}" aria-label="Open photo ${i + 1}"><img src="${esc(p.thumb || p.src)}" alt="${esc(p.caption || "Our baby girl")}" loading="lazy" width="${p.tw || p.w || 600}" height="${p.th || p.h || 800}"></button>`).join("");
-    $("gallery").querySelectorAll("button").forEach(b => b.onclick = () => openLb(+b.dataset.i));
-  });
+fetch("photos/manifest.json", { cache: "no-store" }).then(r => r.ok ? r.json() : {}).catch(() => ({})).then(m => {
+  photos = (m && m.photos) || [];
+  if (!photos.length) return;
+  $("soon").hidden = true; $("gallery").hidden = false;
+  $("gallery").innerHTML = photos.map((p, i) =>
+    `<button type="button" data-i="${i}" aria-label="Open photo ${i + 1}"><img src="${esc(p.thumb || p.src)}" alt="${esc(p.caption || "Ivika")}" loading="lazy" width="${p.tw || 600}" height="${p.th || 800}"></button>`).join("");
+  $("gallery").querySelectorAll("button").forEach(b => b.onclick = () => openLb(+b.dataset.i));
+});
 function openLb(i) {
-  lbIdx = (i + photos.length) % photos.length;
-  const p = photos[lbIdx];
-  $("lbImg").src = p.src; $("lbImg").alt = p.caption || "Our baby girl";
-  $("lbCap").textContent = p.caption || "";
+  lbIdx = (i + photos.length) % photos.length; const p = photos[lbIdx];
+  $("lbImg").src = p.src; $("lbImg").alt = p.caption || "Ivika"; $("lbCap").textContent = p.caption || "";
   $("lbPrev").hidden = $("lbNext").hidden = photos.length < 2;
   $("lightbox").hidden = false; document.body.classList.add("locked");
 }
 function closeLb() { $("lightbox").hidden = true; document.body.classList.remove("locked"); }
-$("lbClose").onclick = closeLb;
-$("lbPrev").onclick = () => openLb(lbIdx - 1);
-$("lbNext").onclick = () => openLb(lbIdx + 1);
+$("lbClose").onclick = closeLb; $("lbPrev").onclick = () => openLb(lbIdx - 1); $("lbNext").onclick = () => openLb(lbIdx + 1);
 $("lightbox").onclick = e => { if (e.target.id === "lightbox") closeLb(); };
-addEventListener("keydown", e => {
-  if ($("lightbox").hidden) return;
-  if (e.key === "Escape") closeLb();
-  if (e.key === "ArrowLeft") openLb(lbIdx - 1);
-  if (e.key === "ArrowRight") openLb(lbIdx + 1);
-});
+addEventListener("keydown", e => { if ($("lightbox").hidden) return; if (e.key === "Escape") closeLb(); if (e.key === "ArrowLeft") openLb(lbIdx - 1); if (e.key === "ArrowRight") openLb(lbIdx + 1); });
 let tx = null;
 $("lightbox").addEventListener("touchstart", e => tx = e.touches[0].clientX, { passive: true });
-$("lightbox").addEventListener("touchend", e => {
-  if (tx === null) return;
-  const dx = e.changedTouches[0].clientX - tx; tx = null;
-  if (Math.abs(dx) > 50) openLb(lbIdx + (dx < 0 ? 1 : -1));
+$("lightbox").addEventListener("touchend", e => { if (tx === null) return; const dx = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(dx) > 50) openLb(lbIdx + (dx < 0 ? 1 : -1)); });
+
+/* ======================= JOURNEY ======================= */
+function addMonths(d, n) { const x = new Date(d); x.setMonth(x.getMonth() + n); return x; }
+function addDays(d, n) { return new Date(d.getTime() + n * 86400000); }
+const AUTO_MILESTONES = [
+  { date: BIRTH, title: "Hello, world! 👶🏻", note: "Ivika arrived at 3:50 AM, weighing 3.3 kg." },
+  { date: addDays(BIRTH, 7), title: "One week old 🍼" },
+  { date: addMonths(BIRTH, 1), title: "One month old 🌙" },
+  { date: addDays(BIRTH, 100), title: "100 days of Ivika 💯" },
+  { date: addMonths(BIRTH, 6), title: "Six months old 🌼" },
+  { date: addMonths(BIRTH, 12), title: "First birthday 🎂" }
+];
+const fmt = d => d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+function relDays(d) {
+  const days = Math.ceil((d - Date.now()) / 86400000);
+  if (days <= 0) return ""; if (days === 1) return "tomorrow";
+  if (days < 45) return `in ${days} days`;
+  const m = Math.round(days / 30.44); return `in about ${m} month${m === 1 ? "" : "s"}`;
+}
+let milestones = AUTO_MILESTONES.slice();
+function renderTimeline() {
+  milestones.sort((a, b) => a.date - b.date);
+  const now = Date.now(); let nextFound = false;
+  const html = milestones.map(m => {
+    const done = m.date.getTime() <= now; let cls = done ? "done" : "";
+    if (!done && !nextFound) { cls = "next"; nextFound = true; }
+    const rel = relDays(m.date);
+    return `<div class="ms ${cls}"><span class="dot">${done ? "✓" : ""}</span><h4>${esc(m.title)}</h4>
+      <div class="when">${fmt(m.date)}${rel ? ` · <em>${rel}</em>` : ""}</div>${m.note ? `<p>${esc(m.note)}</p>` : ""}</div>`;
+  }).join("");
+  $("timeline").innerHTML = `<div class="fill" id="tlFill"></div>` + html;
+}
+renderTimeline();
+fetch("milestones.json", { cache: "no-store" }).then(r => r.ok ? r.json() : {}).catch(() => ({})).then(j => {
+  const extra = ((j && j.moments) || []).filter(m => m.date && m.title).map(m => ({ date: new Date(m.date + "T12:00:00+05:30"), title: m.title, note: m.note || "" }));
+  if (extra.length) { milestones = AUTO_MILESTONES.concat(extra); renderTimeline(); if ($("journeyCard").classList.contains("in")) fillTimeline(); }
+});
+function fillTimeline() {
+  const items = [...document.querySelectorAll("#timeline .ms")];
+  const target = document.querySelector("#timeline .ms.next") || items.filter(x => x.classList.contains("done")).pop();
+  if (!target) return;
+  setTimeout(() => $("tlFill").style.height = (target.offsetTop + 14) + "px", 200);
+}
+
+/* ======================= GUESSES ======================= */
+(function renderResults() {
+  const R = RESULTS, pct = Math.round(100 * R.girls / R.voted);
+  $("genderLine").innerHTML = `<b style="color:var(--rose-deep)">${R.girls} of the ${R.voted}</b> people who voted said girl — Team Pink wins! 💗`;
+  $("legG").textContent = `💗 Girl · ${R.girls}`; $("legB").textContent = `Boy · ${R.boys} 💙`;
+  $("splitG").dataset.w = pct; $("splitG").textContent = pct + "%"; $("splitB").textContent = (100 - pct) + "%";
+  $("pinkList").innerHTML = R.teamPink.map(n => `<span class="chip">${esc(n)}</span>`).join("");
+  const setT = open => $("pinkToggle").textContent = `${open ? "Hide" : "See"} Team Pink (${R.teamPink.length}) ${open ? "▴" : "▾"}`;
+  setT(false); $("pinkToggle").onclick = () => { const open = $("pinkList").hidden; $("pinkList").hidden = !open; setT(open); };
+  const ww = R.weightWinners, exact = ww.length && ww[0].off === 0;
+  $("weightLine").innerHTML = exact ? `Out of ${R.weightN} guesses, <b style="color:var(--rose-deep)">${ww.length} ${ww.length === 1 ? "person" : "people"} nailed it exactly</b> 🎯` : `Closest of ${R.weightN} guesses — just ${ww[0].off} kg away:`;
+  $("weightWin").innerHTML = ww.map(w => `<span class="chip win">${esc(w.name)}</span>`).join("");
+  if (R.weightRunners.length) $("weightRun").innerHTML = `<b>So close (±${R.weightRunners[0].off} kg):</b> ` + R.weightRunners.map(w => esc(w.name)).join(", ");
+  const dw = R.dateWinners, d0 = dw.length ? dw[0].off : 0;
+  $("dateLine").innerHTML = d0 === 0 ? `${dw.length === 1 ? "One person" : dw.length + " people"} guessed <b>12 September</b> exactly!`
+    : `Nobody guessed 12 September exactly — but ${dw.length === 1 ? "this guess was" : "these " + dw.length + " were"} just <b style="color:var(--rose-deep)">${d0} day${d0 === 1 ? "" : "s"} away</b>. Our official Baby Oracle${dw.length === 1 ? "" : "s"}:`;
+  $("dateWin").innerHTML = dw.map(w => `<span class="chip win">${esc(w.name)}<small>${esc(w.guess)}</small></span>`).join("");
+  if (R.dateRunners.length) $("dateRun").innerHTML = `<b>Honourable mentions:</b> ` + R.dateRunners.map(w => `${esc(w.name)} (${esc(w.guess)})`).join(", ");
+})();
+
+/* score every predictor: right gender 40 pts, weight up to 30, date up to 30 */
+const ACT_DATE = new Date("2026-09-12T12:00:00+05:30");
+function scoreOf(e) {
+  let s = 0; const parts = {};
+  if (e.g) { parts.g = e.g === "g"; if (parts.g) s += 40; }
+  if (e.w) { parts.w = Math.round(Math.abs(e.w - 3.3) * 10) / 10; s += Math.max(0, 30 - parts.w * 40); }
+  if (e.d) { parts.d = Math.round(Math.abs(new Date(e.d + "T12:00:00+05:30") - ACT_DATE) / 86400000); s += Math.max(0, 30 - parts.d * 2); }
+  return { s: Math.round(s), parts };
+}
+const SCORED = LOOKUP.map(e => Object.assign({}, e, scoreOf(e))).sort((a, b) => b.s - a.s || a.n.localeCompare(b.n));
+SCORED.forEach((e, i) => e.rank = i > 0 && e.s === SCORED[i - 1].s ? SCORED[i - 1].rank : i + 1);
+$("podium").innerHTML = (() => {
+  const top = SCORED.slice(0, 3), order = [1, 0, 2], medal = r => ["🥇", "🥈", "🥉"][Math.min(r, 3) - 1], cls = ["p1", "p2", "p3"];
+  return order.filter(i => top[i]).map(i => `<div class="pod ${cls[i]}"><span class="m">${medal(top[i].rank)}</span><b>${esc(top[i].n)}</b><small>${top[i].s} pts</small></div>`).join("");
+})();
+function titleFor(e) {
+  const p = e.parts;
+  if (p.g && p.w === 0 && p.d !== undefined && p.d <= 1) return "Certified Baby Oracle 🔮";
+  if (p.w === 0) return "Weight wizard 🎯";
+  if (p.d !== undefined && p.d <= 2) return "Date whisperer 📅";
+  if (p.g) return "Team Pink champion 💗";
+  if (p.g === false) return "Team Blue — so close! 💙";
+  return "Thank you for playing 🎈";
+}
+function showMine(e) {
+  const p = e.parts, rows = [];
+  if (p.g !== undefined) rows.push(p.g ? ["✅", "You said <b>girl</b> — spot on!"] : ["💙", "You said <b>boy</b> — it was a girl this time!"]);
+  if (p.w !== undefined) rows.push(p.w === 0 ? ["🎯", `You guessed <b>${e.w} kg</b> — exactly right!`] : ["⚖️", `You guessed <b>${e.w} kg</b> — ${p.w} kg away`]);
+  if (p.d !== undefined) {
+    const g = new Date(e.d + "T12:00:00+05:30").toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+    rows.push(p.d === 0 ? ["🔮", `You guessed <b>${g}</b> — the exact day!`] : ["📅", `You guessed <b>${g}</b> — ${p.d} day${p.d === 1 ? "" : "s"} away`]);
+  }
+  $("mine").innerHTML = `<div class="title">${esc(e.n)}: ${titleFor(e)}</div><div class="rank">Ranked #${e.rank} of ${SCORED.length} predictors · ${e.s} points</div><ul>${rows.map(r => `<li><b>${r[0]}</b><span>${r[1]}</span></li>`).join("")}</ul>`;
+  $("mine").hidden = false; $("suggest").hidden = true; $("findName").value = e.n;
+  const r = $("mine").getBoundingClientRect(); burst(e.rank <= 10 ? 90 : 40, GOLD, r.left + r.width / 2, r.top + 20, 3);
+  if (e.rank <= 3) chime(); else pop();
+}
+$("findName").addEventListener("input", () => {
+  const q = $("findName").value.trim().toLowerCase();
+  if (q.length < 2) { $("suggest").hidden = true; return; }
+  const hits = SCORED.filter(e => e.n.toLowerCase().split(" ").some(w => w.startsWith(q)) || e.n.toLowerCase().startsWith(q)).slice(0, 8);
+  $("suggest").innerHTML = hits.length ? hits.map(e => `<li><button type="button" data-n="${esc(e.n)}">${esc(e.n)}</button></li>`).join("")
+    : `<li><button type="button" disabled>No prediction found under that name</button></li>`;
+  $("suggest").hidden = false;
+  $("suggest").querySelectorAll("button[data-n]").forEach(b => b.onclick = () => showMine(SCORED.find(e => e.n === b.dataset.n)));
 });
 
-/* share */
-$("shareBtn").onclick = async () => {
-  const text = "It's a girl! 🎀 Aman & Vandana's baby girl arrived on 12 September 2026 at 3:50 AM, weighing 3.3 kg. See the announcement:";
-  if (navigator.share) {
-    try { await navigator.share({ title: "It's a girl! 🎀", text, url: PAGE_URL }); return; } catch (e) { if (e.name === "AbortError") return; }
-  }
-  window.open("https://wa.me/?text=" + encodeURIComponent(text + " " + PAGE_URL), "_blank");
-};
-
-/* announcement card */
-function loadImg(src) {
-  return new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+/* ======================= BLESSINGS ======================= */
+let wall = WALL_SNAPSHOT.slice(), wallFilter = "all", wallShown = 12;
+const likes = new Set(JSON.parse(store.get("ivikaLikes") || "[]"));
+const NOTE_TINTS = ["#FFF3F7", "#FDF6EA", "#F5F0FC", "#EEF7F1", "#EEF4FB", "#FBF0EA"];
+function noteKey(w) { return (w.n + "|" + w.t.slice(0, 30)).toLowerCase(); }
+function renderWall() {
+  const list = wall.filter(w => wallFilter === "all" || w.r === wallFilter);
+  $("wallCount").textContent = `${list.length} blessing${list.length === 1 ? "" : "s"}`;
+  $("wall").innerHTML = list.slice(0, wallShown).map((w, i) => {
+    const k = noteKey(w), on = likes.has(k);
+    return `<figure class="note" style="background:${NOTE_TINTS[i % NOTE_TINTS.length]};animation-delay:${Math.min(i, 10) * 40}ms">
+      ${w.fresh ? '<span class="new">✨ just now</span>' : ""}
+      <q>${esc(w.t)}</q>
+      <figcaption class="who"><b>— ${esc(w.n)}</b><span style="display:flex;gap:6px;align-items:center"><span class="tag">${w.r === "Friend" ? "Friend" : "Family"}</span>
+      <button class="like ${on ? "on" : ""}" type="button" data-k="${esc(k)}" aria-label="Love this blessing">${on ? "💗" : "🤍"}</button></span></figcaption></figure>`;
+  }).join("");
+  $("moreBtn").hidden = list.length <= wallShown;
+  $("wall").querySelectorAll(".like").forEach(b => b.onclick = () => {
+    const k = b.dataset.k; likes.has(k) ? likes.delete(k) : likes.add(k);
+    store.set("ivikaLikes", JSON.stringify([...likes])); b.classList.toggle("on"); b.textContent = likes.has(k) ? "💗" : "🤍"; pop();
+  });
 }
-async function drawCard() {
-  const c = document.createElement("canvas"); c.width = 1080; c.height = 1350;
-  const x = c.getContext("2d");
-  const bg = x.createLinearGradient(0, 0, 0, 1350);
-  bg.addColorStop(0, "#FFF5F0"); bg.addColorStop(.55, "#FBE6EE"); bg.addColorStop(1, "#F3E2F0");
-  x.fillStyle = bg; x.fillRect(0, 0, 1080, 1350);
-  const cols = ["#F2B8C9", "#F5E6BD", "#CDBCE4", "#C7DDEE", "#BFD9C6", "#F3C9AE", "#E7A2B8"];
-  x.strokeStyle = "rgba(156,79,104,.35)"; x.lineWidth = 3;
-  x.beginPath(); x.moveTo(40, 60); x.quadraticCurveTo(540, 150, 1040, 60); x.stroke();
-  for (let i = 0; i < 12; i++) {
-    const t = i / 11, px = 40 + t * 1000, py = 60 + 4 * 45 * t * (1 - t);
-    x.fillStyle = cols[i % cols.length];
-    x.beginPath(); x.moveTo(px - 30, py); x.lineTo(px + 30, py); x.lineTo(px, py + 64); x.closePath(); x.fill();
-  }
-  for (let i = 0; i < 26; i++) {
-    x.globalAlpha = .25 + Math.random() * .35; x.fillStyle = cols[i % cols.length];
-    x.beginPath(); x.arc(Math.random() * 1080, 200 + Math.random() * 1150, 6 + Math.random() * 18, 0, 6.283); x.fill();
-  }
-  x.globalAlpha = 1; x.textAlign = "center";
+renderWall();
+fetch(SCRIPT_URL + "?wall=1").then(r => r.json()).then(j => {
+  if (!j || !j.ok || !Array.isArray(j.wall) || !j.wall.length) return;   // older script: keep the snapshot
+  const fresh = wall.filter(w => w.fresh);
+  wall = fresh.concat(j.wall.filter(w => !fresh.some(f => noteKey(f) === noteKey(w)))); renderWall();
+}).catch(() => {});
+document.querySelectorAll(".filters button").forEach(b => b.onclick = () => {
+  wallFilter = b.dataset.f; wallShown = 12;
+  document.querySelectorAll(".filters button").forEach(x => x.classList.toggle("on", x === b)); renderWall();
+});
+$("moreBtn").onclick = () => { wallShown += 12; renderWall(); };
 
-  let top = 330;
-  if (photos.length) {
-    const img = await loadImg(photos[0].src);
-    if (img) {
-      const r = 210, cxp = 540, cyp = 400, s = Math.max(2 * r / img.width, 2 * r / img.height);
-      x.save(); x.beginPath(); x.arc(cxp, cyp, r, 0, 6.283); x.clip();
-      x.drawImage(img, cxp - img.width * s / 2, cyp - img.height * s / 2, img.width * s, img.height * s);
-      x.restore();
-      x.strokeStyle = "#fff"; x.lineWidth = 14; x.beginPath(); x.arc(cxp, cyp, r, 0, 6.283); x.stroke();
-      top = 690;
-    }
-  }
-  x.fillStyle = "#C9A24B"; x.font = "600 38px Fredoka, Quicksand, sans-serif";
-  x.fillText("W E L C O M E   T O   T H E   W O R L D", 540, top);
-  x.fillStyle = "#5C2E44"; x.font = "700 104px Fredoka, Quicksand, sans-serif";
-  x.fillText("It's a girl! 🎀", 540, top + 120);
-  const rows = [["📅", "Saturday, 12 September 2026"], ["⏰", "3:50 AM"], ["⚖️", "3.3 kg"]];
-  x.font = "600 46px Quicksand, Fredoka, sans-serif"; x.fillStyle = "#35244D";
-  rows.forEach((r, i) => x.fillText(r[0] + "  " + r[1], 540, top + 225 + i * 72));
-  x.fillStyle = "#9C4F68"; x.font = "600 50px Fredoka, Quicksand, sans-serif";
-  x.fillText("With love, Aman & Vandana", 540, Math.min(1290, top + 500));
-  return c;
-}
-$("cardBtn").onclick = async () => {
-  $("cardBtn").disabled = true; $("cardBtn").textContent = "Creating…";
-  try {
-    if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    const c = await drawCard();
-    const blob = await new Promise(r => c.toBlob(r, "image/png"));
-    const file = new File([blob], "its-a-girl.png", { type: "image/png" });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: "It's a girl! 🎀" }); return; }
-      catch (e) { if (e.name === "AbortError") return; }
-    }
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob); a.download = "its-a-girl.png";
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-  } finally {
-    $("cardBtn").disabled = false; $("cardBtn").textContent = "🖼️ Save announcement card";
-  }
-};
-
-/* blessings */
 let relation = "";
-document.querySelectorAll(".seg button").forEach(b => b.onclick = () => {
-  relation = b.dataset.rel;
-  document.querySelectorAll(".seg button").forEach(x => x.classList.toggle("on", x === b));
-});
+document.querySelectorAll(".seg button").forEach(b => b.onclick = () => { relation = b.dataset.rel; document.querySelectorAll(".seg button").forEach(x => x.classList.toggle("on", x === b)); });
 $("bMsg").addEventListener("input", () => $("bCount").textContent = $("bMsg").value.length);
-let deviceId = "";
-try {
-  deviceId = localStorage.getItem("babyPredDevice") || (Date.now().toString(36) + Math.random().toString(36).slice(2, 7));
-  localStorage.setItem("babyPredDevice", deviceId);
-} catch (e) { deviceId = Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+const deviceId = store.get("babyPredDevice") || (Date.now().toString(36) + Math.random().toString(36).slice(2, 7));
+store.set("babyPredDevice", deviceId);
+let lastCard = null;
 
 $("blessForm").onsubmit = async e => {
   e.preventDefault();
@@ -777,34 +1067,115 @@ $("blessForm").onsubmit = async e => {
   if (!name) { $("bErr").textContent = "Please add your name 😊"; $("bName").focus(); return; }
   if (msg.length < 3) { $("bErr").textContent = "Please write a little blessing 💌"; $("bMsg").focus(); return; }
   $("bErr").textContent = ""; $("bSend").disabled = true; $("bSend").textContent = "Sending…";
-  const payload = {
-    clientId: "blessing:" + deviceId + ":" + Date.now(),   // a new row per blessing, never overwrites a prediction
-    name, relation: relation || "", wish: msg, status: "Blessing 🎀",
-    gender: "", babyName: "", lookLike: "", exactDate: "", weight: "", firstWord: "", triviaScore: ""
-  };
   try {
-    await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
+    await fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ kind: "blessing", clientId: "blessing:" + deviceId + ":" + Date.now(), name, relation, wish: msg, status: "Blessing 🎀",
+        gender: "", babyName: "", lookLike: "", exactDate: "", weight: "", firstWord: "", triviaScore: "" }) });
+    const words = name.replace(/\s+/g, " ").split(" "), first = words[0];
+    const short = words.length > 1 ? `${first} ${words[words.length - 1][0].toUpperCase()}.` : first;
+    wall.unshift({ n: short, r: relation || "Family", t: msg, b: 1, fresh: true });
+    wallFilter = "all"; wallShown = 12; document.querySelectorAll(".filters button").forEach(x => x.classList.toggle("on", x.dataset.f === "all")); renderWall();
     $("blessForm").hidden = true; $("bThanks").hidden = false;
-    $("bThanksTitle").textContent = `Thank you, ${name.split(" ")[0]}!`;
-    burst(120, true);
+    $("bThanksTitle").textContent = `Thank you, ${first}! 💗`;
+    burst(140); chime();
+    lastCard = await drawThanksCard(first, msg);
+    $("thanksImg").src = lastCard.toDataURL("image/jpeg", .9);
   } catch (err) {
     $("bErr").textContent = "Couldn't send just now — please check your connection and try again.";
-  } finally {
-    $("bSend").disabled = false; $("bSend").textContent = "Send my blessing 🎀";
-  }
+  } finally { $("bSend").disabled = false; $("bSend").textContent = "Send my blessing 🎀"; }
 };
-$("bAgain").onclick = () => {
-  $("bMsg").value = ""; $("bCount").textContent = "0";
-  $("bThanks").hidden = true; $("blessForm").hidden = false;
+$("bAgain").onclick = () => { $("bMsg").value = ""; $("bCount").textContent = "0"; $("bThanks").hidden = true; $("blessForm").hidden = false; };
+$("seeWall").onclick = () => $("wallCard").scrollIntoView({ behavior: "smooth", block: "start" });
+$("thanksSave").onclick = () => lastCard && saveCanvas(lastCard, "thank-you-from-ivika.png", "A thank-you from Ivika 💗");
+
+/* ======================= CARDS (canvas) ======================= */
+function loadImg(src) { return new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; }); }
+async function fontsReady() {
+  try { await Promise.all(['150px "Great Vibes"', '600 40px Fredoka', 'italic 600 40px "Cormorant Garamond"', '600 40px Quicksand'].map(f => document.fonts.load(f))); } catch (e) {}
+}
+function cardBase(x, W, H) {
+  const bg = x.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, "#FFF7F1"); bg.addColorStop(.5, "#FBE7EF"); bg.addColorStop(1, "#F1E4F3");
+  x.fillStyle = bg; x.fillRect(0, 0, W, H);
+  const cols = ["#F2B8C9", "#F5E6BD", "#CDBCE4", "#C7DDEE", "#BFD9C6", "#F3C9AE", "#E7A2B8"];
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;   // same pattern every time
+  for (let i = 0; i < 30; i++) { x.globalAlpha = .18 + rnd() * .3; x.fillStyle = cols[i % 7]; x.beginPath(); x.arc(rnd() * W, rnd() * H, 5 + rnd() * 20, 0, 6.283); x.fill(); }
+  x.globalAlpha = 1;
+  x.strokeStyle = "rgba(156,79,104,.35)"; x.lineWidth = 3; x.beginPath(); x.moveTo(40, 58); x.quadraticCurveTo(W / 2, 150, W - 40, 58); x.stroke();
+  for (let i = 0; i < 13; i++) { const t = i / 12, px = 40 + t * (W - 80), py = 58 + 4 * 46 * t * (1 - t); x.fillStyle = cols[i % 7]; x.beginPath(); x.moveTo(px - 30, py); x.lineTo(px + 30, py); x.lineTo(px, py + 64); x.closePath(); x.fill(); }
+  const balloon = (bx, by, c) => { x.strokeStyle = c; x.lineWidth = 2; x.beginPath(); x.moveTo(bx, by + 66); x.quadraticCurveTo(bx - 14, by + 130, bx + 4, by + 190); x.stroke();
+    x.fillStyle = c; x.beginPath(); x.ellipse(bx, by, 50, 62, 0, 0, 6.283); x.fill(); x.globalAlpha = .45; x.fillStyle = "#fff"; x.beginPath(); x.ellipse(bx - 17, by - 22, 11, 19, -.3, 0, 6.283); x.fill(); x.globalAlpha = 1; };
+  balloon(96, 225, "#E7A2B8"); balloon(W - 96, 210, "#F2D797");
+  x.strokeStyle = "rgba(194,154,69,.45)"; x.lineWidth = 3; x.strokeRect(34, 34, W - 68, H - 68);
+}
+function goldText(x, text, y, size, W) {
+  x.font = `${size}px "Great Vibes", cursive`;
+  const g = x.createLinearGradient(W / 2 - 300, 0, W / 2 + 300, 0);
+  g.addColorStop(0, "#B8863B"); g.addColorStop(.45, "#D9AE5C"); g.addColorStop(.75, "#C4738C"); g.addColorStop(1, "#B8863B");
+  x.fillStyle = g; x.shadowColor = "rgba(194,154,69,.35)"; x.shadowBlur = 18; x.fillText(text, W / 2, y); x.shadowBlur = 0;
+}
+function wrapLines(x, text, maxW) {
+  const words = text.split(" "), lines = []; let line = "";
+  words.forEach(w => { const t = line ? line + " " + w : w; if (x.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+  if (line) lines.push(line); return lines;
+}
+async function drawAnnouncement() {
+  await fontsReady();
+  const W = 1080, H = 1350, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  cardBase(x, W, H); x.textAlign = "center";
+  let y = 470;
+  if (photos.length) {
+    const img = await loadImg(photos[0].src);
+    if (img) { const r = 190, s = Math.max(2 * r / img.width, 2 * r / img.height);
+      x.save(); x.beginPath(); x.arc(W / 2, 360, r, 0, 6.283); x.clip(); x.drawImage(img, W / 2 - img.width * s / 2, 360 - img.height * s / 2, img.width * s, img.height * s); x.restore();
+      x.strokeStyle = "#fff"; x.lineWidth = 14; x.beginPath(); x.arc(W / 2, 360, r, 0, 6.283); x.stroke(); y = 640; }
+  }
+  const photo = y > 470;
+  x.fillStyle = "#C29A45"; x.font = "600 34px Fredoka, sans-serif"; x.fillText("W E L C O M E   T O   T H E   W O R L D", W / 2, y);
+  goldText(x, "Ivika", y + (photo ? 195 : 235), photo ? 200 : 240, W);
+  x.fillStyle = "#5C2E44"; x.font = "600 38px Fredoka, sans-serif"; x.fillText("S H A R M A    B H A T N A G A R", W / 2, y + (photo ? 265 : 335));
+  x.fillStyle = "#9C4F68"; x.font = 'italic 600 40px "Cormorant Garamond", serif';
+  x.fillText("grace  ·  divine light  ·  protector of the earth", W / 2, y + (photo ? 318 : 395));
+  x.fillStyle = "#35244D"; x.font = "600 44px Quicksand, sans-serif";
+  ["📅  Saturday, 12 September 2026", "⏰  3:50 AM   ·   ⚖️  3.3 kg"].forEach((t, i) => x.fillText(t, W / 2, y + (photo ? 395 : 495) + i * 70));
+  x.fillStyle = "#9C4F68"; x.font = 'italic 600 56px "Cormorant Garamond", serif'; x.fillText("With love, Aman & Vandana", W / 2, Math.min(H - 80, y + (photo ? 560 : 690)));
+  return c;
+}
+async function drawThanksCard(first, msg) {
+  await fontsReady();
+  const W = 1080, H = 1350, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  cardBase(x, W, H); x.textAlign = "center";
+  x.font = 'italic 600 48px "Cormorant Garamond", serif';
+  let lines = wrapLines(x, "“" + msg + "”", 800);
+  if (lines.length > 5) { lines = lines.slice(0, 5); lines[4] = lines[4].replace(/\s*\S*$/, "") + "…”"; }
+  // centre the whole block vertically, whatever the length of the blessing
+  const T = Math.max(300, (H - (705 + (lines.length - 1) * 64)) / 2 - 20);
+  goldText(x, "Thank you", T + 140, 180, W);
+  x.fillStyle = "#5C2E44"; x.font = "600 64px Fredoka, sans-serif"; x.fillText(first + " 💗", W / 2, T + 262);
+  x.fillStyle = "#6E5C64"; x.font = "600 40px Quicksand, sans-serif"; x.fillText("for your beautiful blessing", W / 2, T + 336);
+  x.font = 'italic 600 48px "Cormorant Garamond", serif'; x.fillStyle = "#35244D";
+  lines.forEach((l, i) => x.fillText(l, W / 2, T + 435 + i * 64));
+  const yS = T + 435 + (lines.length - 1) * 64 + 90;
+  x.fillStyle = "#9C4F68"; x.font = 'italic 600 50px "Cormorant Garamond", serif'; x.fillText("With love,", W / 2, yS);
+  goldText(x, "Ivika", yS + 135, 150, W);
+  x.fillStyle = "#5C2E44"; x.font = "600 36px Fredoka, sans-serif"; x.fillText("& Aman and Vandana", W / 2, yS + 205);
+  return c;
+}
+async function saveCanvas(c, filename, title) {
+  const blob = await new Promise(r => c.toBlob(r, "image/png"));
+  const file = new File([blob], filename, { type: "image/png" });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title }); return; } catch (e) { if (e.name === "AbortError") return; } }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+$("cardBtn").onclick = async () => {
+  $("cardBtn").disabled = true; $("cardBtn").textContent = "Creating…";
+  try { await saveCanvas(await drawAnnouncement(), "meet-ivika.png", "Meet Ivika 🎀"); }
+  finally { $("cardBtn").disabled = false; $("cardBtn").textContent = "🖼️ Save announcement card"; }
 };
 
-/* returning visitors skip straight to the news */
-(function () {
-  let seen = false;
-  try { seen = localStorage.getItem("avArrivalSeen") === "1"; } catch (e) {}
-  if (seen) { showMain(false); $("replayBtn").hidden = false; }
-})();
+/* returning visitors go straight to Ivika */
+if (store.get("ivikaSeen") === "1") enterWorld();
 </script>
 </body>
 </html>
