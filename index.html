@@ -53,7 +53,7 @@
   @keyframes drift { 0%,100% { transform: translateX(0); } 50% { transform: translateX(40px); } }
   .rays { position: fixed; left: 50%; top: 50%; width: 180vmax; height: 180vmax; translate: -50% -50%; z-index: 39;
     background: repeating-conic-gradient(rgba(245,200,215,.13) 0 8deg, transparent 8deg 22deg); border-radius: 50%;
-    opacity: 0; transition: opacity .8s; animation: spin 24s linear infinite; }
+    opacity: 0; transition: opacity .8s; animation: spin 24s linear infinite; pointer-events: none; }
   .rays.on { opacity: 1; }
   .rays.gold { background: repeating-conic-gradient(rgba(245,222,160,.12) 0 6deg, transparent 6deg 20deg); }
 
